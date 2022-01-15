@@ -41,8 +41,7 @@ class ValidationDataset(TrainDataset):
         val_dict = {}
         for cid, idxs in obj_to_idxs.items():
             idxs.sort()
-            val = random.sample(idxs, len(idxs))[int(len(idxs) * 0.8):] #昨年のHVRLのコード参照
-            # val = random.sample(idxs, int(len(idxs) * self.ratio))
+            val = random.sample(idxs, len(idxs))[int(len(idxs) * (1 - self.ratio)):]  # 昨年のHVRLのコード参照
             val_dict[cid] = val
             val_set.extend(val)
         return val_dict, set(val_set)
