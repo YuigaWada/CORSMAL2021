@@ -117,7 +117,7 @@ class LoDE:
             capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[2], self.roi[1], self.roi[2], tag)
 
             if capacity == -1:  # 失敗したらview1-view3間で再度実行
-                self.readData(fid, views=[1, 2], tag=tag)
+                self.readData(fid, views=[1, 3], tag=tag)
                 capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[3], self.roi[1], self.roi[3], tag)
                 if capacity == -1:
                     print('Error measuring id{}_{}'.format(self.args.object, fid))
