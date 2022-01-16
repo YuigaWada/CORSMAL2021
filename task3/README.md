@@ -15,3 +15,25 @@
 
 * ピッチャーを取ってこないように, BBOX上位3つに対して, 左から右に物体検出のスコアに重み付けをしてあげる
   + あんまりよろしくないかもしれないので, もしかしたら消すかも
+
+
+## Score
+
+### Validation dataset (80:20, seed=0)
+
+| Container | score | 
+| :--- | :---: | 
+| Red cup | 0.746 | 
+| Small white cup | 0.692 | 
+| Small transparent cup | 0.572 | 
+| Green glass | 0.658 | 
+| Wine glass | 0.672 | 
+| Champagne flute glass | 0.455 | 
+| Cerela box | 0.661 | 
+| Biscuit box | 0.607 | 
+| Tea box | 0.718 | 
+
+
+|  | score | 
+| :--- | :---: | 
+| Total | 0.640 |
