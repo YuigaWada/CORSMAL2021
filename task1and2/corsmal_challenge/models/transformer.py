@@ -173,12 +173,9 @@ class TransformerEncoder(nn.Module):
         return nn.Sequential(*layer_stack)
 
     def forward(self, inputs: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
-        batches, sequence_len, embed_dim = inputs.shape
         # add class token at the head of given sequence
         x = self.cls_token_adder(inputs)
-        # x = F.pad(inputs, (0, 0, 1, 0), "constant", 1)
-        # x[:, 0, :] = self.gen_cls_token(x[:, 0, :])
-        x = self.pe(inputs)
+        x = self.pe(x)
         x = self.first_block(x, mask)
         x = self.layer_stack(x)
         return x
