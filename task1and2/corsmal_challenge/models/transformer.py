@@ -122,10 +122,11 @@ class CLSTokenAdder(nn.Module):
         super(CLSTokenAdder, self).__init__()
         self.embed_dim = embed_dim
         self.gen_cls_token = nn.Linear(in_features=1, out_features=self.embed_dim, bias=False)
+        self.ones = nn.Parameter(torch.ones(1))
 
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
         batches = inputs.shape[0]
-        cls_token = self.gen_cls_token(torch.ones(batches, 1, 1))
+        cls_token = self.gen_cls_token(self.ones.expand(batches, 1, 1))
         return torch.cat((cls_token, inputs), dim=1)
 
 
