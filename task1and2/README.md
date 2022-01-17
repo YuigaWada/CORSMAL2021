@@ -33,3 +33,11 @@ Libraries
 ### Dataset
 Download from [official page](https://corsmal.eecs.qmul.ac.uk/containers_manip.html) & unzip them into `data/` directory.  
 See `data/` directory for more information.
+
+## Get Start
+### Installation
+1. install `torch`, `torchaudio` by pip.. See https://pytorch.org/ and check your hardware requirements
+2. In this directory,  
+    `python -m pip install ./ --use-feature=in-tree-build`
+3. additionally, if you want to rewrite the files in `corsmal_challenge`, remove it from dependencies
+    `python -m pip uninstall corsmal_challenge`
