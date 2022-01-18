@@ -2,13 +2,13 @@ import math
 from typing import Callable, List, Optional
 
 import torch
-import torch.nn.functional as F
 from torch import nn
 
 from corsmal_challenge.models.activation import SquaredReLU
 
 
 class MultiheadedSelfAttention(nn.Module):
+    """(batches, sequence_len, embed_dim) -> same size tensor"""
     def __init__(
         self,
         embed_dim: int,
@@ -26,10 +26,6 @@ class MultiheadedSelfAttention(nn.Module):
         self.projection: Callable[..., torch.Tensor] = nn.Linear(embed_dim, embed_dim)
         self.proj_dropout: Callable[..., torch.Tensor] = nn.Dropout(dropout)
 
-    @torch.jit.script
-    def _kernel_fn(x: torch.Tensor) -> torch.Tensor:  # type: ignore
-        return F.elu(x) + 1
-
     def forward(self, inputs: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         """forward
 
@@ -38,7 +34,7 @@ class MultiheadedSelfAttention(nn.Module):
             mask (torch.Tensor): (batches, sequence_len)
 
         Returns:
-            torch.Tensor: (batches, sequence_len)
+            torch.Tensor: (batches, sequence_len, embed_dim)
         """
         batches, sequence_len, _ = inputs.shape
         qkv: torch.Tensor = (
@@ -48,7 +44,7 @@ class MultiheadedSelfAttention(nn.Module):
 
         qk = torch.matmul(q, k.transpose(-1, -2)) * self.scale
         if mask is not None:
-            qk += mask.float() * -1e38
+            qk = qk + mask.float() * -torch.finfo(inputs.dtype).max
         attn = qk.softmax(dim=-1)
         x = torch.matmul(attn, v)
 
@@ -121,7 +117,22 @@ class TransformerEncoderBlock(nn.Module):
         return out
 
 
+class CLSTokenAdder(nn.Module):
+    def __init__(self, embed_dim: int):
+        super(CLSTokenAdder, self).__init__()
+        self.embed_dim = embed_dim
+        self.gen_cls_token = nn.Linear(in_features=1, out_features=self.embed_dim, bias=False)
+        self.ones = nn.Parameter(torch.ones(1))
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        batches = inputs.shape[0]
+        cls_token = self.gen_cls_token(self.ones.expand(batches, 1, 1))
+        return torch.cat((cls_token, inputs), dim=1)
+
+
 class TransformerEncoder(nn.Module):
+    """Transformer encoder. (batches, sequence_len, embed_dim) -> same size tensor"""
+
     def __init__(
         self,
         num_layers: int,
@@ -130,6 +141,11 @@ class TransformerEncoder(nn.Module):
         dropout: float = 0.05,
     ):
         super(TransformerEncoder, self).__init__()
+        self.num_layers: int = num_layers
+        self.embed_dim: int = embed_dim
+        self.num_heads: int = num_heads
+        self.dropout: float = dropout
+        self.cls_token_adder = CLSTokenAdder(self.embed_dim)
         self.pe = PositionalEncoding(embed_dim)
         self.first_block = MultiheadedSelfAttention(
             embed_dim,
@@ -158,8 +174,8 @@ class TransformerEncoder(nn.Module):
         return nn.Sequential(*layer_stack)
 
     def forward(self, inputs: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
-        # x = inputs
-        x = F.pad(inputs, (0, 0, 1, 0), "constant", 0)  # add class token at the head of given sequence
+        # add class token at the head of given sequence
+        x = self.cls_token_adder(inputs)
         x = self.pe(x)
         x = self.first_block(x, mask)
         x = self.layer_stack(x)
