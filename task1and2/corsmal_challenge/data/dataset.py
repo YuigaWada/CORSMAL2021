@@ -1,7 +1,7 @@
 import json
 import random
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, NamedTuple, Tuple
 
 import torch
 
@@ -113,6 +113,82 @@ class AudioDataset(torch.utils.data.Dataset):
         id: int = self.train_idx[idx] if self.train else self.val_idx[idx]
         data_path: Path = self.audio_path / (str(id).zfill(6) + ".wav")
         label = self.annotations[id][self.query]
+        spectrogram = load_wav(data_path).generate_mel_spectrogram().log2()
+
+        if self.random_crop:
+            sequence_len: int = spectrogram.shape[-1]
+            if self.strong_crop:
+                start = random.randrange(0, sequence_len // 10 * 4)
+                end = random.randrange(sequence_len // 10 * 6, sequence_len)
+            else:
+                start = random.randrange(0, sequence_len // 10 * 2)
+                end = random.randrange(sequence_len // 10 * 8, sequence_len)
+            if self.clip_end:
+                start += sequence_len - end
+                end = sequence_len - 1
+            return spectrogram[:, :, start : end + 1].transpose(-1, -2), label
+
+        return spectrogram.transpose(-1, -2), label
+
+
+class Labels(NamedTuple):
+    type: int
+    level: int
+
+
+class SimpleAudioDataset(torch.utils.data.Dataset):
+    """audio dataset"""
+
+    def __init__(
+        self,
+        indexes: List[int],
+        labels: List[Labels],
+        path_to_data: Path = Path("./data/train/"),
+        query: str = "type",  # "type" or "label"
+        random_crop: bool = False,
+        strong_crop: bool = False,
+        clip_end: bool = False,
+    ):
+        """constructor of SimpleAudioDataset
+
+        Args:
+            indexes (List[int]): list of data indexes
+            path_to_data (Path, optional): Path to data directory. Defaults to Path("./data/train/").
+            seed (int, optional): Random seed to fix randomness. Defaults to 0.
+            random_crop (bool, optional): When enabled, apply random crop to data. Defaults to False.
+            strong_crop (bool, optional): When enabled, do strong data augmentation. Defaults to False.
+            clip_end (bool, optional): When enabled, do not crop the tail of sequence on data augmentation.\\
+                Defaults to False.
+        """
+        self.type_label = {0: "none", 1: "pasta", 2: "rice", 3: "water"}
+        self.level_label = {0: "empty", 1: "half-full", 2: "full"}
+        self.indexes = indexes
+        self.labels = labels
+        self.query = query
+        self.audio_path: Path = path_to_data / "audio"
+        self.random_crop: bool = random_crop
+        self.strong_crop: bool = strong_crop
+        self.clip_end: bool = clip_end
+
+    def __len__(self):
+        """
+        Get length of dataset. If you enable self.train, return the number of training dataset\\
+        and if you disable self.train, return the number of validation dataset.
+        """
+        return len(self.indexes)
+
+    def __getitem__(self, idx) -> Tuple[torch.Tensor, int]:
+        """Get data from specified index
+
+        Args:
+            idx ([type]): Specified index
+
+        Returns:
+            Tuple[torch.Tensor, int]: Tensor (channels, sequence, embedding dim.), label
+        """
+        id: int = self.indexes[idx]
+        label: int = self.labels[idx].type if self.query == "type" else self.labels[idx].level
+        data_path: Path = self.audio_path / (str(id).zfill(6) + ".wav")
         spectrogram = load_wav(data_path).generate_mel_spectrogram().log2()
 
         if self.random_crop:
