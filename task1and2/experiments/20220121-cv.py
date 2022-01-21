@@ -29,9 +29,8 @@ from corsmal_challenge.train.train_val import classification_loop  # noqa (E402)
 from corsmal_challenge.utils import fix_random_seeds  # noqa (E402)
 
 RAND_SEED = 0
-FOLDS = 9
-# FOLD_SKIP_FREQ = 9
-FOLD_SKIP_FREQ = 3
+FOLDS = 7
+FOLD_SKIP_FREQ = 2
 EPOCH = 100
 # EPOCH = 120
 
@@ -92,8 +91,8 @@ if __name__ == "__main__":
         model = TaskChallenger3()
         model = model.to(device)
         loss_fn = nn.CrossEntropyLoss()
-        optimizer = torch.optim.SGD(model.parameters(), momentum=0.5, lr=0.001)
-        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.80)
+        optimizer = torch.optim.SGD(model.parameters(), momentum=0.5, lr=5e-4)
+        lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.85)
         train_dataset = SimpleAudioDataset(train_idx, train_label, data_dir)
         val_dataset = SimpleAudioDataset(val_idx, val_label, data_dir)
         train_dataloader = DataLoader(train_dataset, specified_seed=RAND_SEED, shuffle=True)
@@ -139,7 +138,7 @@ if __name__ == "__main__":
 
             train_dataset.query = "level"
             val_dataset.query = "level"
-            train_dataset.random_crop = False
+            train_dataset.random_crop = True
             train_dataset.strong_crop = False
             train_dataset.clip_end = True
             model.task_id = 1
@@ -170,14 +169,14 @@ if __name__ == "__main__":
                 best_loss_pair = val_loss_t1[-1], val_loss_t2[-1]
                 best_acc_pair = val_acc_t1, val_acc_t2
                 best_epoch_id = step  # 0-indexed
-                torch.save(model.state_dict(), current_dir / f"20220120-cv-result-fold{fold_id + 1}.pt")
+                torch.save(model.state_dict(), current_dir / f"20220121-cv-result-fold{fold_id + 1}.pt")
 
         plt.plot(train_loss_t1, label="train loss: t1")
         plt.plot(val_loss_t1, label="val loss: t1")
         plt.plot(train_loss_t2, label="train loss: t2")
         plt.plot(val_loss_t2, label="val loss: t2")
         plt.legend()
-        plt.savefig(str(current_dir / f"20220120-cv-result-fold{fold_id + 1}.png"))
+        plt.savefig(str(current_dir / f"20220121-cv-result-fold{fold_id + 1}.png"))
 
         loss_acc_summaries.append(f"Fold.{fold_id + 1}")
         loss_acc_summaries.append(f"  on epoch.{best_epoch_id}")
@@ -187,21 +186,3 @@ if __name__ == "__main__":
 
     for summary in loss_acc_summaries:
         print(summary)
-
-# STDOUT
-# ```
-# :
-# Fold.1
-#   on epoch.47
-#   best (val_loss_t1, val_loss_t2) pair is (0.45398750652116415, 0.0869900718096771)!
-#   then (val_acc_t1, val_acc_t2) pair is (0.75, 0.9736842105263158)!
-# Fold.4
-#   on epoch.10
-#   best (val_loss_t1, val_loss_t2) pair is (0.7726110924329412, 0.2768814844258534)!
-#   then (val_acc_t1, val_acc_t2) pair is (0.6710526315789473, 0.868421052631579)!
-# Fold.7
-#   on epoch.24
-#   best (val_loss_t1, val_loss_t2) pair is (0.5331498896304862, 0.18764697292231416)!
-#   then (val_acc_t1, val_acc_t2) pair is (0.6578947368421053, 0.9210526315789473)!
-# (miniconda3-4.7.12) 
-# ```
