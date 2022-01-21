@@ -18,7 +18,7 @@ def run(args, csv_output_path):
     output_path = 'outputs'  # todo: refactor
     if not os.path.exists(output_path): os.makedirs(output_path)
 
-    dataset = ValidationDataset(args.path2data) if args.validation_test else TestDataset(args.path2data)
+    dataset = ValidationDataset(args.path2data) if args.validation_task3 else TestDataset(args.path2data)
     video_processing = DynamicVideoProcessing(args, output_path, dataset=dataset)
 
     lode = LoDE(args, output_path, phase, video_processing, dataset=dataset)
@@ -27,7 +27,7 @@ def run(args, csv_output_path):
     result_list = []
     file_ids = dataset.get_all_fileids()
     for file_id in sorted(file_ids):
-        if args.validation_test and int(file_id) not in dataset.set: continue  # isn't target
+        if args.validation_task3 and int(file_id) not in dataset.set: continue  # isn't target
 
         # inference
         capacity = lode.run(file_id, tag)

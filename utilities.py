@@ -96,5 +96,5 @@ def print_header(args, device):
     print('output_path: ', args.output_path)
     print('model_path: ', args.model_path, "\n")
     print('draw: ', args.draw)
-    print('validation_test: ', args.validation_test)
+    print('validation_task3: ', args.validation_task3)
     print("============================================================")

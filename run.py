@@ -15,8 +15,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("path2data", help="Path to the given data directory", type=str)
     parser.add_argument("output_path", help="Path to output the resulting csv file e.g.) ./out.csv", type=str)
-    parser.add_argument('--draw', default=True, action='store_true', help='Output visual results in ./results')
-    parser.add_argument('--validation_test', default=False, action='store_false', help='Output visual results in ./results')
+    parser.add_argument('--draw', default=True, action='store_true', help='Output visual results in ./output')
+    parser.add_argument('--validation_task3', default=False, action='store_false', help='Validation for task3?')
     parser.add_argument(
         "-m",
         "--model_path",
