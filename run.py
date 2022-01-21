@@ -6,11 +6,11 @@ from pathlib import Path
 
 from task1and2.inference import run as task1and2
 from task3.inference import run as task3
-from utilities import merge_results
+from utilities import merge_results, print_header
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 if __name__ == "__main__":
-    print("current device: {}".format('cuda' if torch.cuda.is_available() else 'cpu'))
-
     # parse args
     parser = argparse.ArgumentParser()
     parser.add_argument("path2data", help="Path to the given data directory", type=str)
@@ -25,6 +25,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    # print info
+    print_header(args, device)
+
     # prepare paths
     output_path = Path(args.output_path)
     csv_paths = {
@@ -33,9 +36,11 @@ if __name__ == "__main__":
     }
 
     # filling type & level classification
+    print("\nStarting Task1 and Task2 ...\n")
     task1and2(args, csv_paths["task1and2"])
 
     # container capacity estimation
+    print("\nStarting Task3 ...\n")
     task3(args, csv_paths["task3"])
 
     # merge results

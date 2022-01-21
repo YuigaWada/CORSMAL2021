@@ -3,6 +3,11 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Union
 
+"""
+csv
+"""
+
+
 def create_initialized_row() -> Dict[str, Union[int, float]]:
     arg_dict: Dict[str, Union[int, float]] = {
         "Configuration ID": -1,
@@ -59,6 +64,12 @@ def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
         writer.writeheader()
         writer.writerows(lis)
 
+
+"""
+Merge
+"""
+
+
 def merge_results(task1and2_path, task3_path):
     df = pd.read_csv(task1and2_path)
     df_t3 = pd.read_csv(task3_path)
@@ -70,3 +81,20 @@ def merge_results(task1and2_path, task3_path):
             df.loc[index, "Container capacity"] = capacity[0]
 
     return df
+
+
+"""
+Print
+"""
+
+
+def print_header(args, device):
+    print("============================================================")
+    print('device: ', device)
+
+    print('path2data: ', args.path2data)
+    print('output_path: ', args.output_path)
+    print('model_path: ', args.model_path, "\n")
+    print('draw: ', args.draw)
+    print('validation_test: ', args.validation_test)
+    print("============================================================")
