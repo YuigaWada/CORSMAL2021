@@ -87,3 +87,39 @@ class TaskChallenger2(nn.Module):
             x = self.classify_head2(x[:, 0, :])  # extract embedding of class token
         x = x.squeeze(1)
         return x
+
+
+class TaskChallenger3(nn.Module):
+    def __init__(self, task_id: int = 1):
+        super(TaskChallenger3, self).__init__()
+        self.task_id = task_id
+        self.encoder = LogMelEncoder(num_encoder_blocks=3, num_heads=4)
+        self.classify_head1 = T1Head()
+        self.classify_head2 = T2Head()
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        x: torch.Tensor = self.encoder(inputs)
+        if self.task_id == 1:
+            x = self.classify_head1(x[:, 0, :])  # extract embedding of class token
+        elif self.task_id == 2:
+            x = self.classify_head2(x[:, 0, :])  # extract embedding of class token
+        x = x.squeeze(1)
+        return x
+
+
+class TaskChallenger4(nn.Module):
+    def __init__(self, task_id: int = 1):
+        super(TaskChallenger4, self).__init__()
+        self.task_id = task_id
+        self.encoder = LogMelEncoder(num_encoder_blocks=3, num_heads=2)
+        self.classify_head1 = T1Head()
+        self.classify_head2 = T2Head()
+
+    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
+        x: torch.Tensor = self.encoder(inputs)
+        if self.task_id == 1:
+            x = self.classify_head1(x[:, 0, :])  # extract embedding of class token
+        elif self.task_id == 2:
+            x = self.classify_head2(x[:, 0, :])  # extract embedding of class token
+        x = x.squeeze(1)
+        return x

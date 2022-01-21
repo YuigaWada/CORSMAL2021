@@ -147,7 +147,7 @@ class TransformerEncoder(nn.Module):
         self.dropout: float = dropout
         self.cls_token_adder = CLSTokenAdder(self.embed_dim)
         self.pe = PositionalEncoding(embed_dim)
-        self.first_block = MultiheadedSelfAttention(
+        self.first_block = TransformerEncoderBlock(
             embed_dim,
             num_heads,
             dropout,
