@@ -186,3 +186,24 @@ if __name__ == "__main__":
 
     for summary in loss_acc_summaries:
         print(summary)
+
+# STDOUT
+# ```
+# :
+# Fold.1
+#   on epoch.17
+#   best (val_loss_t1, val_loss_t2) pair is (0.6847654041724608, 0.15312173732273354)!
+#   then (val_acc_t1, val_acc_t2) pair is (0.6372549019607843, 0.9607843137254902)!
+# Fold.3
+#   on epoch.72
+#   best (val_loss_t1, val_loss_t2) pair is (0.5262470031972043, 0.28623673927115306)!
+#   then (val_acc_t1, val_acc_t2) pair is (0.72, 0.92)!
+# Fold.5
+#   on epoch.53
+#   best (val_loss_t1, val_loss_t2) pair is (0.4910701641077666, 0.17473494132628778)!
+#   then (val_acc_t1, val_acc_t2) pair is (0.7578947368421053, 0.9473684210526315)!
+# Fold.7
+#   on epoch.93
+#   best (val_loss_t1, val_loss_t2) pair is (0.8210631025072775, 0.5048129753834617)!
+#   then (val_acc_t1, val_acc_t2) pair is (0.5157894736842106, 0.7368421052631579)!
+# ```
