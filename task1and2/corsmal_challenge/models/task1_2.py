@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from corsmal_challenge.models.audio import LogMelEncoder
+from task1and2.corsmal_challenge.models.audio import LogMelEncoder
 
 
 class T1Head(nn.Module):
