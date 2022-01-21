@@ -26,14 +26,15 @@ def run(args, csv_output_path):
 
     result_list = []
     file_ids = dataset.get_all_fileids()
-    for fid in sorted(file_ids):
-        if args.validation_test and int(fid) not in dataset.set: continue  # isn't target
+    for file_id in sorted(file_ids):
+        if args.validation_test and int(file_id) not in dataset.set: continue  # isn't target
 
         # inference
-        capacity = lode.run(tag)
+        capacity = lode.run(file_id, tag)
 
         # save as dict
         arg_dict = create_initialized_row()
+        arg_dict["Configuration ID"] = int(file_id)
         arg_dict["Container capacity"] = capacity
         result_list.append(arg_dict)
 
