@@ -87,33 +87,22 @@ class LoDE:
             self.c[view]['intrinsic'] = c1_intrinsic['rgb']
             self.c[view]['extrinsic'] = c1_extrinsic['rgb']
 
-    def run(self, tag):
-        file_ids = self.dataset.get_all_fileids()
-        for fid in sorted(file_ids):
-            if self.args.validation_test and int(fid) not in self.dataset.set: continue  # isn't target
+    def run(self, fid, tag):
+        # Read camera calibration files
+        self.readCalibration(fid)
+        self.readData(fid, views=[1, 2], tag=tag)
 
-            # Read camera calibration files
-            self.readCalibration(fid)
-            self.readData(fid, views=[1, 2], tag=tag)
+        capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[2], self.roi[1], self.roi[2], tag)
 
-            capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[2], self.roi[1], self.roi[2], tag)
-
-            if capacity == -1:  # 失敗したらview1-view3間で再度実行
-                self.readData(fid, views=[1, 3], tag=tag)
-                capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[3], self.roi[1], self.roi[3], tag)
-                if capacity == -1:
-                    print('Error measuring id{}'.format(fid))
-                    capacity = average_training_set
-                else:
-                    print('{}/id{} ---- DONE (view1-view3)'.format(self.output_path, fid))
+        if capacity == -1:  # 失敗したらview1-view3間で再度実行
+            self.readData(fid, views=[1, 3], tag=tag)
+            capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[3], self.roi[1], self.roi[3], tag)
+            if capacity == -1:
+                print('Error measuring id{}'.format(fid))
+                capacity = average_training_set
             else:
-                print('{}/id{} ---- DONE (view1-view2)'.format(self.output_path, fid))
+                print('{}/id{} ---- DONE (view1-view3)'.format(self.output_path, fid))
+        else:
+            print('{}/id{} ---- DONE (view1-view2)'.format(self.output_path, fid))
 
-            if self.args.validation_test:
-                answer = float(self.dataset.annotations[int(fid)]["container capacity"])
-                diff = abs(answer - capacity)
-                score = np.exp(-diff / answer)
-
-                with open('{}/estimation_{}_{}.csv'.format(self.output_path, tag, self.phase), 'a+', newline='') as f:
-                    writer = csv.writer(f)
-                    writer.writerow(['id{}_{}.png'.format(self.args.object, fid), height, width, capacity, tag, diff, score])
+        return capacity

@@ -8,13 +8,12 @@ from task3.dataset import TestDataset, ValidationDataset, DebugDataset
 from task3.video_processing import DynamicVideoProcessing
 from task3.models import LoDE
 from task3.utilities import calc_final_estimation
-
 from task3.config import *
+
+from utilities import create_initialized_row, list2csv
 
 
 def run(args, csv_output_path):
-    print("current device: {}".format('cuda' if torch.cuda.is_available() else 'cpu'))
-
     phase = 'test'
     output_path = 'outputs'  # todo: refactor
     if not os.path.exists(output_path): os.makedirs(output_path)
@@ -25,15 +24,17 @@ def run(args, csv_output_path):
     lode = LoDE(args, output_path, phase, video_processing, dataset=dataset)
     tag = "v1.0"
 
-    lode.run(tag)
+    result_list = []
+    file_ids = dataset.get_all_fileids()
+    for fid in sorted(file_ids):
+        if args.validation_test and int(fid) not in dataset.set: continue  # isn't target
 
-    # calculate final capacities
+        # inference
+        capacity = lode.run(tag)
 
-    if args.validation_test:
-        scores, cscores = calc_final_estimation(dataset, average_training_set, phase, [tag])
-        print("scores: {:.3f}".format(np.mean(scores)))
+        # save as dict
+        arg_dict = create_initialized_row()
+        arg_dict["Container capacity"] = capacity
+        result_list.append(arg_dict)
 
-        for cid in sorted(list(cscores.keys())):
-            print("{}: {:.3f}".format(cid, np.mean(cscores[cid])))
-    else:
-        pass  # todo: calc final
+    list2csv(result_list, csv_output_path)
