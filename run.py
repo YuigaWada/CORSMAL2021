@@ -29,7 +29,8 @@ if __name__ == "__main__":
     print_header(args, device)
 
     # prepare paths
-    output_path = Path(args.output_path)
+    output_path = Path(args.output_path).resolve()
+    output_path = output_path if not output_path.is_dir() else output_path / "out.csv"
     csv_paths = {
         "task1and2": output_path.parents[0] / "out_task1_2.csv",
         "task3": output_path.parents[0] / "out_task3.csv",
