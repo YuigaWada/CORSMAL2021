@@ -78,9 +78,9 @@ if __name__ == "__main__":
             enable_amp=True,
         )
         metrics = tup[1]
-        train_loss_t1.append(metrics["train loss"])
-        val_loss_t1.append(metrics["val loss"])
-        val_acc_t1 = metrics["val accuracy"]
+        train_loss_t2.append(metrics["train loss"])
+        val_loss_t2.append(metrics["val loss"])
+        val_acc_t2 = metrics["val accuracy"]
         print(metrics)
 
         train_dataset.query = "level"
@@ -99,9 +99,9 @@ if __name__ == "__main__":
             enable_amp=True,
         )
         metrics = tup[1]
-        train_loss_t2.append(metrics["train loss"])
-        val_loss_t2.append(metrics["val loss"])
-        val_acc_t2 = metrics["val accuracy"]
+        train_loss_t1.append(metrics["train loss"])
+        val_loss_t1.append(metrics["val loss"])
+        val_acc_t1 = metrics["val accuracy"]
         print(metrics)
 
         lr_scheduler.step()

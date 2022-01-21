@@ -12,24 +12,25 @@ sys.path.append(str(project_root))
 """main"""
 import matplotlib.pyplot as plt  # noqa (E402)
 import torch  # noqa (E402)
+from copy import deepcopy  # noqa (E402)
 from torch import nn  # noqa (E402)
 
 from corsmal_challenge.data.data_loader import (  # noqa (E402)
     ReproducibleDataLoader as DataLoader,
 )
 from corsmal_challenge.data.dataset import AudioDataset  # noqa (E402)
-from corsmal_challenge.models.task1_2 import TaskChallenger4  # noqa (E402)
+from corsmal_challenge.models.task1_2 import TaskChallenger3  # noqa (E402)
 from corsmal_challenge.train.train_val import classification_loop  # noqa (E402)
 from corsmal_challenge.utils import fix_random_seeds  # noqa (E402)
 
 RAND_SEED = 0
-EPOCH = 150
+EPOCH = 100
 
 if __name__ == "__main__":
     fix_random_seeds(RAND_SEED)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = TaskChallenger4()
+    model = TaskChallenger3()
     model = model.to(device)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), momentum=0.5, lr=0.001)
@@ -42,13 +43,8 @@ if __name__ == "__main__":
         mv_val2train=mv_val2train,
         train=True,
     )
-    val_dataset = AudioDataset(
-        data_dir,
-        data_dir / "ccm_train_annotation.json",
-        seed=RAND_SEED,
-        mv_val2train=mv_val2train,
-        train=False,
-    )
+    val_dataset = deepcopy(train_dataset)
+    val_dataset.train = False
     train_dataloader = DataLoader(train_dataset, specified_seed=RAND_SEED, shuffle=True)
     val_dataloader = DataLoader(val_dataset, specified_seed=RAND_SEED, shuffle=True)
 
@@ -78,9 +74,9 @@ if __name__ == "__main__":
             enable_amp=True,
         )
         metrics = tup[1]
-        train_loss_t1.append(metrics["train loss"])
-        val_loss_t1.append(metrics["val loss"])
-        val_acc_t1 = metrics["val accuracy"]
+        train_loss_t2.append(metrics["train loss"])
+        val_loss_t2.append(metrics["val loss"])
+        val_acc_t2 = metrics["val accuracy"]
         print(metrics)
 
         train_dataset.query = "level"
@@ -99,9 +95,9 @@ if __name__ == "__main__":
             enable_amp=True,
         )
         metrics = tup[1]
-        train_loss_t2.append(metrics["train loss"])
-        val_loss_t2.append(metrics["val loss"])
-        val_acc_t2 = metrics["val accuracy"]
+        train_loss_t1.append(metrics["train loss"])
+        val_loss_t1.append(metrics["val loss"])
+        val_acc_t1 = metrics["val accuracy"]
         print(metrics)
 
         lr_scheduler.step()
@@ -125,18 +121,18 @@ if __name__ == "__main__":
 # STDOUT
 # ```
 # :
-# {'train loss': 0.03728779871972468, 'train accuracy': 0.9867768595041322, \
-#       'val loss': 0.10871001488149254, 'val accuracy': 0.9615384615384616}
-# {'train loss': 0.031024785050870442, 'train accuracy': 0.9917355371900827, \
-#       'val loss': 0.9776671341283579, 'val accuracy': 0.7564102564102564}
-# {'train loss': 0.07070674430640347, 'train accuracy': 0.9834710743801653, \
-#       'val loss': 0.14151212510526606, 'val accuracy': 0.9615384615384616}
-# {'train loss': 0.02485862942431711, 'train accuracy': 0.9917355371900827, \
-#       'val loss': 0.6063724803497845, 'val accuracy': 0.8589743589743589}
-# {'train loss': 0.03606577391804771, 'train accuracy': 0.9884297520661157, \
-#       'val loss': 0.22414980898134254, 'val accuracy': 0.9102564102564102}
-# {'train loss': 0.008726799127156477, 'train accuracy': 1.0, \
-#       'val loss': 0.5411773054698263, 'val accuracy': 0.8717948717948718}
-# best (val_loss_t1, val_loss_t2) pair is (0.08326099165004472, 0.20015583899676598)!
-# then (val_acc_t1, val_acc_t2) pair is (0.9615384615384616, 0.9102564102564102)!
+# {'train loss': 0.03259559987212404, 'train accuracy': 0.9900826446280991, \
+#       'val loss': 0.09255558425203593, 'val accuracy': 0.9743589743589743}
+# {'train loss': 0.018783402334247124, 'train accuracy': 0.9917355371900827, \
+#       'val loss': 0.5271039578048471, 'val accuracy': 0.8589743589743589}
+# {'train loss': 0.041603947514882625, 'train accuracy': 0.9917355371900827, \
+#       'val loss': 0.12049947416946265, 'val accuracy': 0.9743589743589743}
+# {'train loss': 0.020213941789273077, 'train accuracy': 0.9900826446280991, \
+#       'val loss': 0.4169351998993985, 'val accuracy': 0.8846153846153846}
+# {'train loss': 0.02943369326331549, 'train accuracy': 0.9900826446280991, \
+#       'val loss': 0.18701425280734624, 'val accuracy': 0.9102564102564102}
+# {'train loss': 0.015433374435863977, 'train accuracy': 0.9950413223140496, \
+#       'val loss': 0.41150730150411025, 'val accuracy': 0.8974358974358975}
+# best (val_loss_t1, val_loss_t2) pair is (0.10694323163130694, 0.18056305236659215)!
+# then (val_acc_t1, val_acc_t2) pair is (0.9743589743589743, 0.9487179487179487)!
 # ```
