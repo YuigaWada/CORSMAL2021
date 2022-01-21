@@ -4,7 +4,7 @@ import csv
 import time
 from pathlib import Path
 from task1and2.inference import run as task1and2
-from task3.main import run as task3
+from task3.inference import run as task3
 
 if __name__ == "__main__":
     # parse args
