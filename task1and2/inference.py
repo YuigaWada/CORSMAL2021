@@ -1,90 +1,18 @@
 """get data directory from cli & generate """
-import argparse
-import csv
 import time
 from pathlib import Path
 from typing import Dict, List, Union
 
 import torch
 
-from corsmal_challenge.data.audio import load_wav
-from corsmal_challenge.models.task1_2 import TaskChallenger3
+from task1and2.corsmal_challenge.data.audio import load_wav
+from task1and2.corsmal_challenge.models.task1_2 import TaskChallenger3
+from utilities import create_initialized_row, list2csv
 
-
-def create_initialized_row() -> Dict[str, Union[int, float]]:
-    arg_dict: Dict[str, Union[int, float]] = {
-        "Configuration ID": -1,
-        "Container capacity": -1,
-        "Container mass": -1,
-        "Filling mass": -1,
-        "None": -1,
-        "Pasta": -1,
-        "Rice": -1,
-        "Water": -1,
-        "Filling type": -1,
-        "Empty": -1,
-        "Half-full": -1,
-        "Full": -1,
-        "Filling level": -1,
-        "Width at the top": -1,
-        "Width at the bottom": -1,
-        "Height": -1,
-        "Object safety": -1,
-        "Distance": -1,
-        "Angle difference": -1,
-        "Execution time": -1,
-    }
-    return arg_dict
-
-
-def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
-    with open(str(path), "w") as f:
-        writer = csv.DictWriter(
-            f,
-            [
-                "Configuration ID",
-                "Container capacity",
-                "Container mass",
-                "Filling mass",
-                "None",
-                "Pasta",
-                "Rice",
-                "Water",
-                "Filling type",
-                "Empty",
-                "Half-full",
-                "Full",
-                "Filling level",
-                "Width at the top",
-                "Width at the bottom",
-                "Height",
-                "Object safety",
-                "Distance",
-                "Angle difference",
-                "Execution time",
-            ],
-        )
-        writer.writeheader()
-        writer.writerows(lis)
-
-
-if __name__ == "__main__":
-    # parse args
-    parser = argparse.ArgumentParser()
-    parser.add_argument("path2data", help="Path to the given data directory", type=str)
-    parser.add_argument("output_path", help="Path to output the resulting csv file e.g.) ./out.csv", type=str)
-    parser.add_argument(
-        "-m",
-        "--model_path",
-        help='Path to the stored model. Defaults to "./task_challenger3.pt"',
-        default="./task_challenger3.pt",
-    )
-    args = parser.parse_args()
-
+def run(args, output_path):
     # get Path
     data_dir: Path = Path(args.path2data)
     audio_dir: Path = data_dir / "audio"
-    output_path: Path = Path(args.output_path)
     model_path: Path = Path(args.model_path)
 
     # load model & send to device

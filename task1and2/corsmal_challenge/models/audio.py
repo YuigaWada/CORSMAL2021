@@ -3,12 +3,12 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from corsmal_challenge.models.convolution import (
+from task1and2.corsmal_challenge.models.convolution import (
     DepthWiseConv2d,
     PointWiseConv2d,
     make_inverted_res_stack,
 )
-from corsmal_challenge.models.transformer import TransformerEncoder
+from task1and2.corsmal_challenge.models.transformer import TransformerEncoder
 
 
 class LogMelEncoder(nn.Module):

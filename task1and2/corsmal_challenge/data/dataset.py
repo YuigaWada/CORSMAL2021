@@ -5,8 +5,8 @@ from typing import Dict, List, NamedTuple, Tuple
 
 import torch
 
-from corsmal_challenge.data.audio import load_wav
-from corsmal_challenge.utils import fix_random_seeds
+from task1and2.corsmal_challenge.data.audio import load_wav
+from task1and2.corsmal_challenge.utils import fix_random_seeds
 
 
 class AudioDataset(torch.utils.data.Dataset):

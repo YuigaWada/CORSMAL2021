@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from corsmal_challenge.models.activation import SquaredReLU
+from task1and2.corsmal_challenge.models.activation import SquaredReLU
 
 
 class DepthWiseConv2d(nn.Conv2d):

@@ -4,7 +4,7 @@ from typing import Callable, List, Optional
 import torch
 from torch import nn
 
-from corsmal_challenge.models.activation import SquaredReLU
+from task1and2.corsmal_challenge.models.activation import SquaredReLU
 
 
 class MultiheadedSelfAttention(nn.Module):

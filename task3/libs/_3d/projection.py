@@ -34,7 +34,7 @@ import math
 #
 import copy
 #
-from utilities import draw_bbox, roi_extract
+from task3.utilities import draw_bbox, roi_extract
 #
 
 
@@ -232,7 +232,7 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
     # TODO take all the radius that converges
     average_radius = np.mean(estRadius[converged]) * 1000
     width = np.max(estRadius) * 2. * 1000
-    height = (estHeights[-1] - estHeights[0]) * 1000
+    height = (estHeights[-1] - estHeights[0]) * 1000 if estHeights.shape[0] > 0 else 0
     # capacity = (np.power(average_radius, 2) * height * np.pi)/1000
 
     capacity = 0
