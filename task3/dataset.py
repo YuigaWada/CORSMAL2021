@@ -1,5 +1,7 @@
 import random
 import json
+import os
+import re
 
 
 class Dataset:
@@ -7,6 +9,29 @@ class Dataset:
         self.annotations = None
         self.dict, self.set = None, None
         self.data_path = data_path
+
+    def get_calib_path(self, fid=None, view=None):
+        calibration_path = os.path.join(self.data_path, 'view{}'.format(view), 'calib')
+        path = calibration_path + '/{}.pickle'.format(fid, view)
+        assert os.path.exists(path), "Can't find path " + path
+        return path
+
+    def get_video_path(self, fid=None, view=None):
+        rgb_path = os.path.join(self.data_path, 'view{}'.format(view), 'rgb')
+        path = "{}/{}.mp4".format(rgb_path, fid, view)
+        assert os.path.exists(path), "Can't find path " + path
+        return path
+
+    def get_all_fileids(self):
+        calibration_path = os.path.join(self.data_path, 'view1', 'calib')
+        file_pattern = r"([\w\d_]+).pickle"
+        file_id_list = [re.match(file_pattern, f).group(1) for f in os.listdir(calibration_path) if re.match(file_pattern, f)]  # todo: compile
+        return file_id_list
+
+
+class TestDataset(Dataset):
+    def __init__(self, data_path):
+        super().__init__(data_path)
 
 
 class TrainDataset(Dataset):
@@ -41,7 +66,7 @@ class ValidationDataset(TrainDataset):
         val_dict = {}
         for cid, idxs in obj_to_idxs.items():
             idxs.sort()
-            val = random.sample(idxs, len(idxs))[int(len(idxs) * (1 - self.ratio)):]  # 昨年のHVRLのコード参照
+            val = random.sample(idxs, len(idxs))[int(len(idxs) * (1 - self.ratio)):]
             val_dict[cid] = val
             val_set.extend(val)
         return val_dict, set(val_set)

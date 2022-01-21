@@ -42,11 +42,6 @@ class LoDE:
         self.video_processing = abstractVideoProcessing
         self.dataset = dataset
 
-        # ADDED METHOD to extract the frames from the video
-        print('Extract frames from bigger database')
-        # for frame in frame_set:
-        #     utilities.extract_frames(args.data_path, object_set, modality_set, frame)
-
         # Load object detection model
         self.detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
         self.detectionModel.eval()
@@ -63,7 +58,7 @@ class LoDE:
             centroid = centroid[:, :-1].reshape(-1)
 
             height, width, visualization, capacity, radius = getObjectDimensions(c1, c2, roi_list1, roi_list2, centroid, self.args.draw)
-            cv2.imwrite('{}/id{}_{}_{}.jpeg'.format(self.output_path, self.args.object, file_id, tag), visualization, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # cv2.imwrite('{}/id{}_{}_{}.jpeg'.format(self.output_path, self.args.object, file_id, tag), visualization, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 
         except BaseException:
             capacity, height, width = -1, 0, 0
@@ -77,17 +72,14 @@ class LoDE:
             self.c[view]['seg'] = c[view]['seg']
             self.roi[view] = roi[view]
 
-    # Read calibration file for the chosen setup
-
-    def readCalibration(self, calibration_path, file_id):
+    def readCalibration(self, file_id):
         for view in range(1, VIEW_COUNT + 1):
-            path = calibration_path + '/{}_c{}_calib.pickle'.format(file_id, view)
-
-            if not os.path.exists(path):
-                print('COMBINATION OF PARAMETERS FOR CALIBRATION DOES NOT EXISTS')
+            calibration_path = self.dataset.get_calib_path(file_id, view)
+            if not os.path.exists(calibration_path):
+                print('failed to load {}'.format(calibration_path))
                 return
             else:
-                with open(path, 'rb') as f:
+                with open(calibration_path, 'rb') as f:
                     calibration = pickle.load(f, encoding="latin1")
                     c1_intrinsic = calibration[0]
                     c1_extrinsic = calibration[1]
@@ -96,36 +88,32 @@ class LoDE:
             self.c[view]['extrinsic'] = c1_extrinsic['rgb']
 
     def run(self, tag):
-        calibration_path = os.path.join(self.args.path2data, self.args.object, 'calib')
-        assert os.path.isdir(calibration_path), "Can't find path " + calibration_path
+        file_ids = self.dataset.get_all_fileids()
+        for fid in sorted(file_ids):
+            if self.args.validation_test and int(fid) not in self.dataset.set: continue  # isn't target
 
-        file_pattern = r"([\w\d_]+)_c1_calib.pickle"
-        file_id_list = [re.match(file_pattern, f).group(1) for f in os.listdir(calibration_path) if re.match(file_pattern, f)]
-
-        for fid in sorted(file_id_list):
-            if int(fid) not in self.dataset.dict[int(self.args.object)]: continue  # isn't target
             # Read camera calibration files
-            self.readCalibration(calibration_path, fid)
-            # Main loop
+            self.readCalibration(fid)
             self.readData(fid, views=[1, 2], tag=tag)
 
-            answer = float(self.dataset.annotations[int(fid)]["container capacity"])
             capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[2], self.roi[1], self.roi[2], tag)
 
             if capacity == -1:  # 失敗したらview1-view3間で再度実行
                 self.readData(fid, views=[1, 3], tag=tag)
                 capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[3], self.roi[1], self.roi[3], tag)
                 if capacity == -1:
-                    print('Error measuring id{}_{}'.format(self.args.object, fid))
+                    print('Error measuring id{}'.format(fid))
                     capacity = average_training_set
                 else:
-                    print('{}/id{}_{} ---- DONE (view1-view3)'.format(self.output_path, self.args.object, fid))
+                    print('{}/id{} ---- DONE (view1-view3)'.format(self.output_path, fid))
             else:
-                print('{}/id{}_{} ---- DONE (view1-view2)'.format(self.output_path, self.args.object, fid))
+                print('{}/id{} ---- DONE (view1-view2)'.format(self.output_path, fid))
 
-            diff = abs(answer - capacity)
-            score = np.exp(-diff / answer)
+            if self.args.validation_test:
+                answer = float(self.dataset.annotations[int(fid)]["container capacity"])
+                diff = abs(answer - capacity)
+                score = np.exp(-diff / answer)
 
-            with open('{}/estimation_{}_{}.csv'.format(self.output_path, tag, self.phase), 'a+', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(['id{}_{}.png'.format(self.args.object, fid), height, width, capacity, tag, diff, score])
+                with open('{}/estimation_{}_{}.csv'.format(self.output_path, tag, self.phase), 'a+', newline='') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(['id{}_{}.png'.format(self.args.object, fid), height, width, capacity, tag, diff, score])

@@ -17,15 +17,15 @@ class AbstractVideoProcessing:
 
 
 class DynamicVideoProcessing(AbstractVideoProcessing):
-    def __init__(self, args, output_path):
+    def __init__(self, args, output_path, dataset):
         self.c = [dict.fromkeys(['rgb', 'seg', 'intrinsic', 'extrinsic']) for _ in range(VIEW_COUNT + 1)]  # camera1-3
         self.roi = [[] for _ in range(VIEW_COUNT + 1)]  # camera1-3
         self.args = args
         self.output_path = output_path
+        self.dataset = dataset
 
     def prepare_data(self, detectionModel, args, fid, views, tag):
-        rgb_path = os.path.join(self.args.path2data, self.args.object, 'rgb')
-        caps = self.read_caps(rgb_path, fid, views)
+        caps = self.read_caps(fid, views)
         frame_idx = self.get_best_frame(detectionModel, caps)
         print("frame_idx:", frame_idx)
         for i, cap in enumerate(caps):
@@ -40,7 +40,7 @@ class DynamicVideoProcessing(AbstractVideoProcessing):
 
             img = copy.deepcopy(f)
             img = draw_bbox(roi_extract(self.roi[view]), img)
-            cv2.imwrite('{}/bbox/id{}_{}_c{}_{}.jpeg'.format(self.output_path, self.args.object, fid, view, tag), img, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+            # cv2.imwrite('{}/bbox/id_{}_c{}_{}.jpeg'.format(self.output_path,  fid, view, tag), img, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 
         return self.c, self.roi
 
@@ -135,14 +135,12 @@ class DynamicVideoProcessing(AbstractVideoProcessing):
 
                 score -= ds  # penalty
 
-        # return max(0,score)
         return score
 
-    def read_caps(self, rgb_path, fid, views):
+    def read_caps(self, fid, views):
         caps = []
         for view in views:
-            path = "{}/{}_c{}.mp4".format(rgb_path, fid, view)
-            assert os.path.exists(path)
+            path = self.dataset.get_video_path(fid, view)
             cap = cv2.VideoCapture(path)
             caps.append(cap)
         return caps
