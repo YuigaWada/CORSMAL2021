@@ -27,9 +27,9 @@ import pickle
 import re
 import csv
 
-from libs._3d.projection import *
-from video_processing import AbstractVideoProcessing
-from config import *
+from task3.libs._3d.projection import *
+from task3.video_processing import AbstractVideoProcessing
+from task3.config import *
 
 
 class LoDE:

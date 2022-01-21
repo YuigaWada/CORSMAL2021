@@ -5,9 +5,9 @@ import os
 
 
 from abc import ABCMeta, abstractmethod
-from libs._3d.projection import *
-from libs.detection.detection import imageSegmentation
-from config import *
+from task3.libs._3d.projection import *
+from task3.libs.detection.detection import imageSegmentation
+from task3.config import *
 
 
 class AbstractVideoProcessing:
