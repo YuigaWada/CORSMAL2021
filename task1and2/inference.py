@@ -1,6 +1,4 @@
 """get data directory from cli & generate """
-import argparse
-import csv
 import time
 from pathlib import Path
 from typing import Dict, List, Union
@@ -9,63 +7,7 @@ import torch
 
 from task1and2.corsmal_challenge.data.audio import load_wav
 from task1and2.corsmal_challenge.models.task1_2 import TaskChallenger3
-
-def create_initialized_row() -> Dict[str, Union[int, float]]:
-    arg_dict: Dict[str, Union[int, float]] = {
-        "Configuration ID": -1,
-        "Container capacity": -1,
-        "Container mass": -1,
-        "Filling mass": -1,
-        "None": -1,
-        "Pasta": -1,
-        "Rice": -1,
-        "Water": -1,
-        "Filling type": -1,
-        "Empty": -1,
-        "Half-full": -1,
-        "Full": -1,
-        "Filling level": -1,
-        "Width at the top": -1,
-        "Width at the bottom": -1,
-        "Height": -1,
-        "Object safety": -1,
-        "Distance": -1,
-        "Angle difference": -1,
-        "Execution time": -1,
-    }
-    return arg_dict
-
-
-def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
-    with open(str(path), "w") as f:
-        writer = csv.DictWriter(
-            f,
-            [
-                "Configuration ID",
-                "Container capacity",
-                "Container mass",
-                "Filling mass",
-                "None",
-                "Pasta",
-                "Rice",
-                "Water",
-                "Filling type",
-                "Empty",
-                "Half-full",
-                "Full",
-                "Filling level",
-                "Width at the top",
-                "Width at the bottom",
-                "Height",
-                "Object safety",
-                "Distance",
-                "Angle difference",
-                "Execution time",
-            ],
-        )
-        writer.writeheader()
-        writer.writerows(lis)
-
+from utilities import create_initialized_row, list2csv
 
 def run(args, output_path):
     # get Path
