@@ -24,7 +24,7 @@ class DynamicVideoProcessing(AbstractVideoProcessing):
         self.output_path = output_path
 
     def prepare_data(self, detectionModel, args, fid, views, tag):
-        rgb_path = os.path.join(self.args.data_path, self.args.object, 'rgb')
+        rgb_path = os.path.join(self.args.path2data, self.args.object, 'rgb')
         caps = self.read_caps(rgb_path, fid, views)
         frame_idx = self.get_best_frame(detectionModel, caps)
         print("frame_idx:", frame_idx)

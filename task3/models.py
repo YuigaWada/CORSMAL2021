@@ -27,7 +27,6 @@ import pickle
 import re
 import csv
 
-import matplotlib.pyplot as plt
 from libs._3d.projection import *
 from video_processing import AbstractVideoProcessing
 from config import *
@@ -66,9 +65,6 @@ class LoDE:
             height, width, visualization, capacity, radius = getObjectDimensions(c1, c2, roi_list1, roi_list2, centroid, self.args.draw)
             cv2.imwrite('{}/id{}_{}_{}.jpeg'.format(self.output_path, self.args.object, file_id, tag), visualization, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 
-            plt.plot(radius)
-            plt.savefig('{}/id{}_{}_{}_fig.png'.format(self.output_path, self.args.object, file_id, tag))
-            plt.clf()
         except BaseException:
             capacity, height, width = -1, 0, 0
 
@@ -100,7 +96,7 @@ class LoDE:
             self.c[view]['extrinsic'] = c1_extrinsic['rgb']
 
     def run(self, tag):
-        calibration_path = os.path.join(self.args.data_path, self.args.object, 'calib')
+        calibration_path = os.path.join(self.args.path2data, self.args.object, 'calib')
         assert os.path.isdir(calibration_path), "Can't find path " + calibration_path
 
         file_pattern = r"([\w\d_]+)_c1_calib.pickle"
