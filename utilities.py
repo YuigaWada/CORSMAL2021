@@ -66,7 +66,7 @@ def merge_results(task1and2_path, task3_path):
     for index, row in df.iterrows():
         file_id = row["Configuration ID"]
         capacity = df_t3[df_t3["Configuration ID"] == file_id]["Container capacity"]
-        if len(capacity) > 0: 
-            df["Container capacity"][index] = capacity
+        if len(capacity) > 0:
+            df.loc[index, "Container capacity"] = capacity[0]
 
     return df
