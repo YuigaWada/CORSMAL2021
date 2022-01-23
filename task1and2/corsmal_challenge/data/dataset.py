@@ -24,6 +24,7 @@ class AudioDataset(torch.utils.data.Dataset):
         random_crop: bool = False,
         strong_crop: bool = False,
         clip_end: bool = False,
+        return_also_data_id: bool = False
     ):
         """constructor of AudioDataset
 
@@ -57,6 +58,7 @@ class AudioDataset(torch.utils.data.Dataset):
         self.random_crop: bool = random_crop
         self.strong_crop: bool = strong_crop
         self.clip_end: bool = clip_end
+        self.return_also_data_id: bool = return_also_data_id
 
     def _get_annotations(self, path_to_annotation_file) -> List[Dict[str, int]]:
         """Invoked by constructor to get summarized annotation dictionary"""
@@ -126,8 +128,12 @@ class AudioDataset(torch.utils.data.Dataset):
             if self.clip_end:
                 start += sequence_len - end
                 end = sequence_len - 1
+            if self.return_also_data_id:
+                return spectrogram[:, :, start : end + 1].transpose(-1, -2), label, id
             return spectrogram[:, :, start : end + 1].transpose(-1, -2), label
 
+        if self.return_also_data_id:
+            return spectrogram.transpose(-1, -2), label, id
         return spectrogram.transpose(-1, -2), label
 
 
