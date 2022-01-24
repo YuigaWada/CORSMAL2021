@@ -19,11 +19,18 @@ if __name__ == "__main__":
     parser.add_argument('--draw', default=True, action='store_true', help='Output visual results in ./output')
     parser.add_argument('--validation_task3', default=False, action='store_false', help='Validation for task3?')
     parser.add_argument(
-        "-m",
-        "--model_path",
-        help='Path to the stored model. Defaults to "./task_challenger3.pt"',
+        "-m12",
+        "--task1and2_model_path",
+        help='Path to the stored model for task3. Defaults to "./task_challenger3.pt"',
         default="./task_challenger3.pt",
     )
+    parser.add_argument(
+        "-m4",
+        "--task4_model_path",
+        help='Path to the stored model for task4. Defaults to "./task4.pt"',
+        default="./task4.pt",
+    )
+
     args = parser.parse_args()
 
     # print info

@@ -26,7 +26,7 @@ def run(args, output_path, path_for_task3):
     dataset = MaskDataset(X, np.empty_like(X), df, video_processing, detectionModel, args)
 
     model = ConvNet()
-    model.load_state_dict(torch.load('./task4.pt'))  # todo: 指定できるように
+    model.load_state_dict(torch.load(args.task4_model_path))
     model.cuda()
 
     model.eval()

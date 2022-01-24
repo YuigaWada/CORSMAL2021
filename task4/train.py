@@ -99,7 +99,7 @@ def train(args, path_for_task3):
 def eval(validation, val_loader, model=None):
     if model is None:
         model = ConvNet()
-        model.load_state_dict(torch.load('./task4.pt'))  # todo: 指定できるように
+        model.load_state_dict(torch.load('./task4.pt'))
         model.cuda()
     scores = []
 
