@@ -3,6 +3,8 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Union
 
+from task3.config import *
+
 """
 csv
 """
@@ -28,6 +30,14 @@ name_type_table = {
     "Distance": int,
     "Angle difference": int,
     "Execution time": float
+}
+
+average_table = {
+    "Container capacity": average_capacity,
+    "Height": average_height,
+    "Width at the top": average_width_top,
+    "Width at the bottom": average_width_bottom,
+    "Container mass": average_container_mass,
 }
 
 
@@ -119,9 +129,9 @@ def merge_results(paths):
     targets = ["Container capacity", "Height", "Width at the top", "Width at the bottom", "Container mass"]
     result = []
 
-    for key in sorted(row_dict.keys()):
+    for cid in sorted(row_dict.keys()):
         merged = {}
-        for row in row_dict[key]:
+        for row in row_dict[cid]:
             for k, v in row.items():
                 tp = name_type_table[k]
                 v = tp(v)
@@ -131,6 +141,10 @@ def merge_results(paths):
                     merged[k] = v
                 elif k == "Execution time" and v != -1:
                     merged[k] += v
+
+        for k, v in merged.items():
+            if k in average_table.keys() and v == -1:
+                merged[k] = average_table[k]
 
         result.append(merged)
 
