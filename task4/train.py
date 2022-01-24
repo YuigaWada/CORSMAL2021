@@ -1,14 +1,12 @@
 import numpy as np
 
 from task3.dataset import TestDataset, ValidationDataset, DebugDataset, TrainDataset
-from task3.video_processing import DynamicVideoProcessing
 from task4.models import ConvNet
 from task3.config import *
 from task4.dataset import MaskDataset
 from task4.utilities import EarlyStopping
 
 import torch
-import torchvision
 import torch.optim as optim
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -17,13 +15,10 @@ import pandas as pd
 import numpy as np
 
 
-def generate_dataset(train, validation, video_processing, detectionModel, args, batch_size, path_for_task3):
-    X_train, y_train = train.get_container_mass_data()
-    X_test, y_test = validation.get_container_mass_data()
+def generate_dataset(train, validation, batch_size, path_for_task3):
     df = pd.read_csv(path_for_task3)
-
-    train_dataset = MaskDataset(X_train, y_train, df, video_processing, detectionModel, args)
-    test_dataset = MaskDataset(X_test, y_test, df, video_processing, detectionModel, args, is_train=False)
+    train_dataset = MaskDataset(train, df)
+    test_dataset = MaskDataset(validation, df, is_train=False)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,
                               num_workers=0)
@@ -36,13 +31,7 @@ def generate_dataset(train, validation, video_processing, detectionModel, args, 
 def train(args, path_for_task3):
     train = TrainDataset(args.path2data, ratio=0.8)
     validation = ValidationDataset(args.path2data, ratio=0.2)
-    video_processing = DynamicVideoProcessing(output_path='outputs', dataset=train)  # todo: MaskDataset内で生成するように
-
-    detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
-    detectionModel.eval()
-    detectionModel.cuda()
-
-    train_loader, val_loader = generate_dataset(train, validation, video_processing, detectionModel, args, batch_size=8, path_for_task3=path_for_task3)
+    train_loader, val_loader = generate_dataset(train, validation, batch_size=8, path_for_task3=path_for_task3)
 
     model = ConvNet().cuda()
     optimizer = optim.Adam(model.parameters(), lr=0.00025)

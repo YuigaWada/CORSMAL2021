@@ -14,16 +14,8 @@ from utilities import create_initialized_row, list2csv
 
 def run(args, output_path, path_for_task3):
     test = TestDataset(args.path2data)
-    video_processing = DynamicVideoProcessing(output_path='outputs', dataset=test)  # todo: MaskDataset内で生成するように
-
-    detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
-    detectionModel.eval()
-    detectionModel.cuda()
-
     df = pd.read_csv(path_for_task3)
-    X = test.get_all_fileids()
-    X = list(map(int, X))
-    dataset = MaskDataset(X, np.empty_like(X), df, video_processing, detectionModel, args)
+    dataset = MaskDataset(test, df)
 
     model = ConvNet()
     model.load_state_dict(torch.load(args.task4_model_path))

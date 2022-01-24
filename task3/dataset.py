@@ -2,6 +2,7 @@ import random
 import json
 import os
 import re
+import numpy as np
 
 
 class Dataset:
@@ -32,6 +33,12 @@ class Dataset:
 class TestDataset(Dataset):
     def __init__(self, data_path):
         super().__init__(data_path)
+
+    def get_container_mass_data(self):
+        X = self.get_all_fileids()
+        X = list(map(int, X))
+        Y = np.empty_like(X)  # just dummy
+        return X, Y
 
 
 class TrainDataset(Dataset):

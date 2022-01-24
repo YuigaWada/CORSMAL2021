@@ -1,8 +1,12 @@
-from torch.utils.data import Dataset
-import torch
 import os
 import cv2
 import numpy as np
+
+import torch
+import torchvision
+from torch.utils.data import Dataset
+
+from task3.video_processing import DynamicVideoProcessing
 
 
 def get_crop_region(mask):
@@ -99,8 +103,13 @@ def preprocessing(mask):  # 回転軸を決定して手の凹みを補間. 完�
 
 
 class MaskDataset(Dataset):
-    def __init__(self, x, y, df, video_processing, detectionModel, args, is_train=True):
+    def __init__(self, dataset, df, is_train=True):
         use_annotation = False
+        video_processing = DynamicVideoProcessing(output_path='outputs', dataset=dataset)
+        detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+        detectionModel.eval()
+        detectionModel.cuda()
+        x, y = dataset.get_container_mass_data()
 
         self.images = []
         self.dimension_vector_list = []
