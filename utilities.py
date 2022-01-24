@@ -77,18 +77,17 @@ def merge_results(paths):
 
     for index, row in df.iterrows():
         file_id = row["Configuration ID"]
-        
         # task3 and task5
         for name in ["Container capacity","Height","Width at the top","Width at the bottom"]:
             value = df_t3[df_t3["Configuration ID"] == file_id][name]
             if len(value): 
-                df.loc[index, name] = value[0]
+                df.loc[index, name] = value.iloc[0]
 
         # task4
         for name in ["Container mass"]:
             value = df_t4[df_t4["Configuration ID"] == file_id][name]
-            if len(value): 
-                df.loc[index, name] = value[0]
+            if len(value):
+                df.loc[index, name] = value.iloc[0]
 
     return df
 
