@@ -70,7 +70,7 @@ class LoDE:
         return capacity, height, width
 
     def readData(self, fid, views, tag):
-        c, roi = self.video_processing.prepare_data(self.detectionModel, self.args, fid, views, tag)
+        c, roi = self.video_processing.prepare_data(self.detectionModel, fid, views, tag)
         for view in views:
             self.c[view]['rgb'] = c[view]['rgb']
             self.c[view]['seg'] = c[view]['seg']
@@ -92,21 +92,21 @@ class LoDE:
             self.c[view]['extrinsic'] = c1_extrinsic['rgb']
 
     def run(self, fid, tag):
-        # Read camera calibration files
+        # Read data and estimate the capacity, width and height
         self.readCalibration(fid)
         self.readData(fid, views=[1, 2], tag=tag)
-
         capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[2], self.roi[1], self.roi[2], tag)
 
-        if capacity == -1:  # 失敗したらview1-view3間で再度実行
+        # re-estimate with view-1 and view-3 if the above estimation was failed.
+        if capacity == -1:
             self.readData(fid, views=[1, 3], tag=tag)
             capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[3], self.roi[1], self.roi[3], tag)
             if capacity == -1:
-                print('Error measuring id{}'.format(fid))
+                print('id={}: cannot measure\n'.format(fid))
                 capacity = average_training_set
             else:
-                print('{}/id{} ---- DONE (view1-view3)'.format(self.output_path, fid))
+                print('id={}: done (view1 and view3)\n'.format(fid))
         else:
-            print('{}/id{} ---- DONE (view1-view2)'.format(self.output_path, fid))
+            print('id={}: done (view1 and view2)\n'.format(fid))
 
         return capacity, height, width

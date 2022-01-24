@@ -24,8 +24,8 @@ class Dataset:
 
     def get_all_fileids(self):
         calibration_path = os.path.join(self.data_path, 'view1', 'calib')
-        file_pattern = r"([\w\d_]+).pickle"
-        file_id_list = [re.match(file_pattern, f).group(1) for f in os.listdir(calibration_path) if re.match(file_pattern, f)]  # todo: compile
+        pattern = re.compile(r"([\w\d_]+).pickle")
+        file_id_list = [pattern.match(f).group(1) for f in os.listdir(calibration_path) if pattern.match(f)]
         return file_id_list
 
 

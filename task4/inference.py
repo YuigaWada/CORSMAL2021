@@ -12,10 +12,9 @@ from task4.dataset import MaskDataset
 from utilities import create_initialized_row, list2csv
 
 
-def run(args, csv_output_path, path_for_task3):
-    output_path = 'outputs'  # todo: refactor
+def run(args, output_path, path_for_task3):
     test = TestDataset(args.path2data)
-    video_processing = DynamicVideoProcessing(args, output_path, dataset=test)  # todo: MaskDataset内で生成するように
+    video_processing = DynamicVideoProcessing(output_path='outputs', dataset=test)  # todo: MaskDataset内で生成するように
 
     detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
     detectionModel.eval()
@@ -49,4 +48,4 @@ def run(args, csv_output_path, path_for_task3):
 
             result_list.append(arg_dict)
 
-    list2csv(result_list, csv_output_path)
+    list2csv(result_list, output_path)

@@ -34,10 +34,9 @@ def generate_dataset(train, validation, video_processing, detectionModel, args, 
 
 
 def train(args, path_for_task3):
-    output_path = 'outputs'  # todo: refactor
     train = TrainDataset(args.path2data, ratio=0.8)
     validation = ValidationDataset(args.path2data, ratio=0.2)
-    video_processing = DynamicVideoProcessing(args, output_path, dataset=train)  # todo: MaskDataset内で生成するように
+    video_processing = DynamicVideoProcessing(output_path='outputs', dataset=train)  # todo: MaskDataset内で生成するように
 
     detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
     detectionModel.eval()

@@ -183,7 +183,7 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
     converged = []
 
     heights = np.linspace(minHeight, maxHeight, num=int((maxHeight - minHeight) / step))
-    print("step_h:", heights.shape, "step_r:", radiuses.shape)
+    # print("step_h:", heights.shape, "step_r:", radiuses.shape)
     for height in heights:
         for rad in radiuses:
             seg1 = copy.deepcopy(c1['seg'])
@@ -253,7 +253,6 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
         for i, (d, r) in enumerate(D):
             if pre > d:
                 width_bottom = 2 * r * 1000
-                print(i)
                 break
             pre = d
 
@@ -262,7 +261,6 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
         for i, (d, r) in enumerate(reversed(D)):
             if pre > d:
                 width_top = 2 * r * 1000
-                print(i)
                 break
             pre = d
 

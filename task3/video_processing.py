@@ -17,17 +17,22 @@ class AbstractVideoProcessing:
 
 
 class DynamicVideoProcessing(AbstractVideoProcessing):
-    def __init__(self, args, output_path, dataset):
+    def __init__(self, output_path, dataset):
+        if not os.path.exists(output_path): os.makedirs(output_path)
+
         self.c = [dict.fromkeys(['rgb', 'seg', 'intrinsic', 'extrinsic']) for _ in range(VIEW_COUNT + 1)]  # camera1-3
         self.roi = [[] for _ in range(VIEW_COUNT + 1)]  # camera1-3
-        self.args = args
         self.output_path = output_path
         self.dataset = dataset
 
-    def prepare_data(self, detectionModel, args, fid, views, tag):
+    def prepare_data(self, detectionModel, fid, views, tag):
         caps = self.read_caps(fid, views)
         frame_idx = self.get_best_frame(detectionModel, caps)
-        print("frame_idx:", frame_idx)
+        if frame_idx == -1:
+            print("[video-processing] NOT FOUND BEST FRAME ... !")
+            frame_idx = 0
+        else:
+            print("[video-processing] best frame is", frame_idx)
         for i, cap in enumerate(caps):
             view = views[i]
             cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
@@ -71,11 +76,10 @@ class DynamicVideoProcessing(AbstractVideoProcessing):
 
                 if is_clear:
                     score = self.calc_all_detect_score(mseg, mroi)
-                    print(i, frame.shape, score)
                     candidate.append((i, score))
 
         if len(candidate) == 0:
-            return 0
+            return -1
 
         candidate.sort(key=lambda x: x[1])
         return candidate[-1][0]

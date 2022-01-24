@@ -108,7 +108,7 @@ class MaskDataset(Dataset):
         self.file_ids = []
         path = './cropped' if is_train else "./cropped_val"
         for i, fid in enumerate(x):
-            print("video-processing: {}/{}".format(i, len(x)))
+            print("[task4.MaskDataset] video-processing: {}/{}".format(i, len(x)))
             fid_str = str(1000000 + fid)[1:]
 
             files = [f for f in os.listdir(path) if f == 'seg{}.pt'.format(fid_str)]
@@ -135,7 +135,7 @@ class MaskDataset(Dataset):
                 continue
 
             view = 3
-            c, roi = video_processing.prepare_data(detectionModel, args, fid_str, [view], "task4")
+            c, roi = video_processing.prepare_data(detectionModel, fid_str, [view], "task4")
             img = c[view]['rgb']
             seg = c[view]["seg"]
             if seg is None: continue
@@ -145,7 +145,7 @@ class MaskDataset(Dataset):
             y2 = seg.shape[0] - y2
             x2 = seg.shape[1] - x2
             h, w = y2 - y1, x2 - x1
-            print("region", y1, x1, y2, x2)
+            # print("region", y1, x1, y2, x2)
 
             for k in range(3):
                 img[:, :, k] = img[:, :, k] * seg
