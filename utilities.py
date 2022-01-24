@@ -34,7 +34,20 @@ def create_initialized_row() -> Dict[str, Union[int, float]]:
     return arg_dict
 
 
-def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
+def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:  # todo: E表記をしないように修正
+    result = []
+    for i in range(len(lis)):
+        dt = {}
+        for key, value in lis[i].items():
+            tp = type(value)
+            if tp is float:
+                dt[key] = "{:.5f}".format(value)
+            elif tp is int:
+                dt[key] = str(value)
+            else:
+                dt[key] = value
+        result.append(dt)
+
     with open(str(path), "w") as f:
         writer = csv.DictWriter(
             f,
@@ -62,8 +75,7 @@ def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
             ],
         )
         writer.writeheader()
-        writer.writerows(lis)
-
+        writer.writerows(result)
 
 """
 Merge
