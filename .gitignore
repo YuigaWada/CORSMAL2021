@@ -6,6 +6,7 @@
 *.png
 *~
 *.csv
+*.pt
 
 ### Template for Python (provided by GitHub)
 # Byte-compiled / optimized / DLL files

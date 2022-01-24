@@ -183,7 +183,7 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
     converged = []
 
     heights = np.linspace(minHeight, maxHeight, num=int((maxHeight - minHeight) / step))
-    print("step_h:", heights.shape, "step_r:", radiuses.shape)
+    # print("step_h:", heights.shape, "step_r:", radiuses.shape)
     for height in heights:
         for rad in radiuses:
             seg1 = copy.deepcopy(c1['seg'])
@@ -229,9 +229,43 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
     converged = np.array(converged)
     estHeights = heights[converged]
 
-    # TODO take all the radius that converges
-    average_radius = np.mean(estRadius[converged]) * 1000
-    width = np.max(estRadius) * 2. * 1000
+    properRadius = estRadius[converged]
+
+    candidate = properRadius
+    width_top, width_bottom = -1, -1
+    if len(properRadius) > 0:  # task4
+        candidate = []
+        eps = 1e-3
+        r = -1
+        for i in range(properRadius.shape[0] - 1):
+            dr = properRadius[i + 1] - properRadius[i]
+            if abs(dr) < eps and abs(properRadius[i + 1] - r) >= eps:
+                candidate.append(properRadius[i])
+                r = properRadius[i + 1]
+
+        D = []
+        for i in range(len(candidate) - 1):
+            dr = candidate[i + 1] - candidate[i]
+            D.append((abs(dr), candidate[i + 1]))
+
+        # bottom
+        pre, r = D[0]
+        for i, (d, r) in enumerate(D):
+            if pre > d:
+                width_bottom = 2 * r * 1000
+                break
+            pre = d
+
+        # top
+        pre, r = D[-1]
+        for i, (d, r) in enumerate(reversed(D)):
+            if pre > d:
+                width_top = 2 * r * 1000
+                break
+            pre = d
+
+        print("width:", width_top, width_bottom)
+
     height = (estHeights[-1] - estHeights[0]) * 1000 if estHeights.shape[0] > 0 else 0
     # capacity = (np.power(average_radius, 2) * height * np.pi)/1000
 
@@ -242,10 +276,7 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
         capacity += np.pi * abs(h2 - h1) / 3 * (np.power(r1, 2) + np.power(r2, 2) + r1 * r2)
 
     capacity *= 1000**2
-    print(estRadius[converged])
-    print("original: ", (np.power(average_radius, 2) * height * np.pi) / 1000)
-    print("yuwd: ", capacity)
-    # capacity = (np.power(average_radius, 2) * height * np.pi)/1000
+    print("capacity:", capacity)
 
     img1 = copy.deepcopy(c1['rgb'])
     img2 = copy.deepcopy(c2['rgb'])
@@ -289,7 +320,6 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
             areIn_c1 = seg1[p2d_c1[:, 1], p2d_c1[:, 0]]
             areIn_c2 = seg2[p2d_c2[:, 1], p2d_c2[:, 0]]
 
-            # 未収束の点群は表示しないようにコメントアウト
             for p, isIn in zip(p2d_c1, areIn_c1):
                 if isIn:
                     cv2.circle(img1, (int(p[0]), int(p[1])), 2, (0, 255, 0), -1)
@@ -308,4 +338,4 @@ def getObjectDimensions(_c1, _c2, roi_list1, roi_list2, centroid, draw=False):
         img_with_bbox = np.concatenate((img1_with_bbox, img2_with_bbox), axis=1)
         vis = np.concatenate((img_with_bbox, masked, img))
 
-    return height, width, vis, capacity, estRadius[converged]
+    return height, (width_top, width_bottom), vis, capacity, candidate

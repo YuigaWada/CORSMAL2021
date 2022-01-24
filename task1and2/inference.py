@@ -13,7 +13,7 @@ def run(args, output_path):
     # get Path
     data_dir: Path = Path(args.path2data)
     audio_dir: Path = data_dir / "audio"
-    model_path: Path = Path(args.model_path)
+    model_path: Path = Path(args.task1and2_model_path)
 
     # load model & send to device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

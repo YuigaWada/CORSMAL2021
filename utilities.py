@@ -3,9 +3,42 @@ import pandas as pd
 from pathlib import Path
 from typing import Dict, List, Union
 
+from task3.config import *
+
 """
 csv
 """
+
+name_type_table = {
+    "Configuration ID": int,
+    "Container capacity": float,
+    "Container mass": float,
+    "Filling mass": int,
+    "None": float,
+    "Pasta": float,
+    "Rice": float,
+    "Water": float,
+    "Filling type": int,
+    "Empty": float,
+    "Half-full": float,
+    "Full": float,
+    "Filling level": int,
+    "Width at the top": float,
+    "Width at the bottom": float,
+    "Height": float,
+    "Object safety": int,
+    "Distance": int,
+    "Angle difference": int,
+    "Execution time": float
+}
+
+average_table = {
+    "Container capacity": average_capacity,
+    "Height": average_height,
+    "Width at the top": average_width_top,
+    "Width at the bottom": average_width_bottom,
+    "Container mass": average_container_mass,
+}
 
 
 def create_initialized_row() -> Dict[str, Union[int, float]]:
@@ -35,6 +68,19 @@ def create_initialized_row() -> Dict[str, Union[int, float]]:
 
 
 def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
+    result = []
+    for i in range(len(lis)):
+        dt = {}
+        for key, value in lis[i].items():
+            tp = name_type_table[key]
+            if tp is float:
+                dt[key] = "{:.5f}".format(value)
+            elif tp is int:
+                dt[key] = str(value)
+            else:
+                dt[key] = value
+        result.append(dt)
+
     with open(str(path), "w") as f:
         writer = csv.DictWriter(
             f,
@@ -62,7 +108,7 @@ def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
             ],
         )
         writer.writeheader()
-        writer.writerows(lis)
+        writer.writerows(result)
 
 
 """
@@ -70,17 +116,39 @@ Merge
 """
 
 
-def merge_results(task1and2_path, task3_path):
-    df = pd.read_csv(task1and2_path)
-    df_t3 = pd.read_csv(task3_path)
+def merge_results(paths):
+    row_dict = {}
+    for task_name in ["task1and2", "task3", "task4"]:
+        with open(str(paths[task_name]), "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                cid = int(row["Configuration ID"])
+                if cid not in row_dict: row_dict[cid] = []
+                row_dict[cid].append(row)
 
-    for index, row in df.iterrows():
-        file_id = row["Configuration ID"]
-        capacity = df_t3[df_t3["Configuration ID"] == file_id]["Container capacity"]
-        if len(capacity) > 0:
-            df.loc[index, "Container capacity"] = capacity[0]
+    targets = ["Container capacity", "Height", "Width at the top", "Width at the bottom", "Container mass"]
+    result = []
 
-    return df
+    for cid in sorted(row_dict.keys()):
+        merged = {}
+        for row in row_dict[cid]:
+            for k, v in row.items():
+                tp = name_type_table[k]
+                v = tp(v)
+                if k not in merged:
+                    merged[k] = v
+                elif k in targets and v != -1:
+                    merged[k] = v
+                elif k == "Execution time" and v != -1:
+                    merged[k] += v
+
+        for k, v in merged.items():
+            if k in average_table.keys() and v == -1:
+                merged[k] = average_table[k]
+
+        result.append(merged)
+
+    return result
 
 
 """
@@ -94,7 +162,8 @@ def print_header(args, device):
 
     print('path2data: ', args.path2data)
     print('output_path: ', args.output_path)
-    print('model_path: ', args.model_path, "\n")
+    print('task1and2_model_path: ', args.task1and2_model_path)
+    print('task4_model_path: ', args.task4_model_path, "\n")
     print('draw: ', args.draw)
     print('validation_task3: ', args.validation_task3)
     print("============================================================")
