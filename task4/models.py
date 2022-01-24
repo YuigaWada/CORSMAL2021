@@ -77,5 +77,6 @@ class ConvNet(nn.Module):
 
         x = torch.cat((x, dimension_vector), dim=1)
         x = self.linear3(x)
+        x = F.relu(x)
 
         return x
