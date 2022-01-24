@@ -49,7 +49,7 @@ if __name__ == "__main__":
     task1and2(args, csv_paths["task1and2"])
 
     # container capacity estimation
-    print("\nStarting Task3 ...\n")
+    print("\nStarting Task3 and Task5...\n")
     task3(args, csv_paths["task3"])
 
     # container mass estimation
