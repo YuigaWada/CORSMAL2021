@@ -15,7 +15,7 @@ from utilities import create_initialized_row, list2csv
 def run(args, output_path, path_for_task3):
     test = TestDataset(args.path2data)
     df = pd.read_csv(path_for_task3)
-    dataset = MaskDataset(test, df)
+    dataset = MaskDataset(test, df, is_test=True)
 
     model = ConvNet()
     model.load_state_dict(torch.load(args.task4_model_path))
@@ -31,11 +31,14 @@ def run(args, output_path, path_for_task3):
 
             start_time = time.process_time()
 
-            # inference
-            pred = model(x_img.cuda().unsqueeze(0), x_dimension_vector.cuda().unsqueeze(0))
-            pred = pred.detach().cpu().numpy()
-            pred = pred.flatten()
-            pred = pred[0] if pred.shape[0] > 0 else 0
+            if x_img is None:
+                pred = average_container_mass
+            else:
+                # inference
+                pred = model(x_img.cuda().unsqueeze(0), x_dimension_vector.cuda().unsqueeze(0))
+                pred = pred.detach().cpu().numpy()
+                pred = pred.flatten()
+                pred = pred[0] if pred.shape[0] > 0 else 0
 
             # measure time
             elapsed_time = time.process_time() - start_time

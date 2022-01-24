@@ -103,7 +103,7 @@ def preprocessing(mask):  # 回転軸を決定して手の凹みを補間. 完�
 
 
 class MaskDataset(Dataset):
-    def __init__(self, dataset, df, is_train=True):
+    def __init__(self, dataset, df, is_train=True, is_test=False):
         use_annotation = False
         video_processing = DynamicVideoProcessing(output_path='outputs', dataset=dataset)
         detectionModel = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
@@ -152,7 +152,13 @@ class MaskDataset(Dataset):
             c, roi = video_processing.prepare_data(detectionModel, fid_str, [view], "task4")
             img = c[view]['rgb']
             seg = c[view]["seg"]
-            if seg is None: continue
+            if seg is None: 
+                if is_test:
+                    self.images.append(None)
+                    self.dimension_vector_list.append(None)
+                    self.file_ids.append(fid)
+                    self.Y.append(y[i])
+                continue
 
             seg = seg / 255
             y1, x2, y2, x1 = get_crop_region(seg)
@@ -193,6 +199,7 @@ class MaskDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
+        if self.images[idx] is None: return (None, None), None, torch.Tensor([self.file_ids[idx]])
         image = torch.Tensor(self.images[idx])
         dimension_vector = torch.Tensor(self.dimension_vector_list[idx])
         Y = torch.Tensor([self.Y[idx]])
