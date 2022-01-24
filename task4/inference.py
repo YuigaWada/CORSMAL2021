@@ -46,7 +46,7 @@ def run(args, output_path, path_for_task3):
             arg_dict = create_initialized_row()
             arg_dict["Configuration ID"] = fid
             arg_dict["Container mass"] = pred
-            arg_dict["Execution time"] = elapsed_time + dataset.get_elapsed_time(fid)
+            arg_dict["Execution time"] = elapsed_time * 1000 + dataset.get_elapsed_time(fid)
             result_list.append(arg_dict)
 
     list2csv(result_list, output_path)

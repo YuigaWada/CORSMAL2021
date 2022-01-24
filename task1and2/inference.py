@@ -61,7 +61,7 @@ def run(args, output_path):
             arg_dict["Half-full"] = float(prediction_t1[0][1])
             arg_dict["Full"] = float(prediction_t1[0][2])
             arg_dict["Filling level"] = int(torch.argmax(prediction_t1, dim=-1))
-            arg_dict["Execution time"] = elapsed_time
+            arg_dict["Execution time"] = elapsed_time * 1000
             result_list.append(arg_dict)
 
             print(" ==> done.")

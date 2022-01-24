@@ -40,7 +40,7 @@ def run(args, csv_output_path):
         arg_dict["Height"] = height
         arg_dict["Width at the top"] = width_top
         arg_dict["Width at the bottom"] = width_bottom
-        arg_dict["Execution time"] = elapsed_time
+        arg_dict["Execution time"] = elapsed_time * 1000
         result_list.append(arg_dict)
         count += 1
 

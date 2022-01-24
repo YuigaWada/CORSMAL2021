@@ -145,7 +145,7 @@ class MaskDataset(Dataset):
                 self.file_ids.append(fid)
                 self.Y.append(y[i])
                 elapsed_time = time.process_time() - start_time
-                self.time_table[fid] = elapsed_time
+                self.time_table[fid] = elapsed_time * 1000
                 continue
 
             view = 3
@@ -193,7 +193,7 @@ class MaskDataset(Dataset):
 
             # measure time
             elapsed_time = time.process_time() - start_time
-            self.time_table[fid] = elapsed_time
+            self.time_table[fid] = elapsed_time * 1000
 
     def __len__(self):
         return len(self.images)
@@ -207,6 +207,6 @@ class MaskDataset(Dataset):
 
         return (image, dimension_vector), Y, file_id
 
-    def get_elapsed_time(self, file_id):
+    def get_elapsed_time(self, file_id): # [msec]
         if file_id not in self.time_table: return 0
         return self.time_table[file_id]
