@@ -1,4 +1,4 @@
-import os
+import time
 
 from task3.dataset import TestDataset, ValidationDataset, DebugDataset, TrainDataset
 from task3.video_processing import DynamicVideoProcessing
@@ -23,10 +23,15 @@ def run(args, csv_output_path):
     count = 0
     for file_id in sorted(file_ids):
         if args.validation_task3 and int(file_id) not in dataset.set: continue  # isn't target
+
         print("[task3.inference] {} / {}".format(count, len(file_ids)))
+        start_time = time.process_time()
 
         # inference
         capacity, height, (width_top, width_bottom) = lode.run(file_id, tag)
+
+        # measure time
+        elapsed_time = time.process_time() - start_time
 
         # save as dict
         arg_dict = create_initialized_row()
@@ -35,6 +40,7 @@ def run(args, csv_output_path):
         arg_dict["Height"] = height
         arg_dict["Width at the top"] = width_top
         arg_dict["Width at the bottom"] = width_bottom
+        arg_dict["Execution time"] = elapsed_time
         result_list.append(arg_dict)
         count += 1
 
