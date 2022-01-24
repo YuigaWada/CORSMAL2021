@@ -76,7 +76,6 @@ def preprocessing(mask):  # 回転軸を決定して手の凹みを補間. 完�
         l, r = get_line_section(mask, i)
 
         if l is not None:
-            print(l, r + 1, mask.shape)
             left = axis - l + 1
             right = r - axis + 1
 
@@ -116,6 +115,7 @@ class MaskDataset(Dataset):
         self.Y = []
         self.file_ids = []
         path = './cropped' if is_train else "./cropped_val"
+        if not os.path.exists(path): os.makedirs(path)
         for i, fid in enumerate(x):
             print("[task4.MaskDataset] video-processing: {}/{}".format(i, len(x)))
             fid_str = str(1000000 + fid)[1:]
