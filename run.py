@@ -6,6 +6,7 @@ from pathlib import Path
 
 from task1and2.inference import run as task1and2
 from task3.inference import run as task3
+from task4.inference import run as task4
 from utilities import merge_results, print_header
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -34,6 +35,7 @@ if __name__ == "__main__":
     csv_paths = {
         "task1and2": output_path.parents[0] / "out_task1_2.csv",
         "task3": output_path.parents[0] / "out_task3.csv",
+        "task4": output_path.parents[0] / "out_task4.csv"
     }
 
     # filling type & level classification
@@ -44,8 +46,12 @@ if __name__ == "__main__":
     print("\nStarting Task3 ...\n")
     task3(args, csv_paths["task3"])
 
+    # container mass estimation
+    print("\nStarting Task4 ...\n")
+    task4(args, csv_paths["task4"], path_for_task3=csv_paths["task3"])
+
     # merge results
-    df = merge_results(csv_paths["task1and2"], csv_paths["task3"])
+    df = merge_results(csv_paths)
     df.to_csv(output_path)
 
     print("Success...!")

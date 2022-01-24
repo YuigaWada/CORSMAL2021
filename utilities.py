@@ -70,15 +70,25 @@ Merge
 """
 
 
-def merge_results(task1and2_path, task3_path):
-    df = pd.read_csv(task1and2_path)
-    df_t3 = pd.read_csv(task3_path)
+def merge_results(paths):
+    df = pd.read_csv(paths["task1and2"])
+    df_t3 = pd.read_csv(paths["task3"])
+    df_t4 = pd.read_csv(paths["task4"])
 
     for index, row in df.iterrows():
         file_id = row["Configuration ID"]
-        capacity = df_t3[df_t3["Configuration ID"] == file_id]["Container capacity"]
-        if len(capacity) > 0:
-            df.loc[index, "Container capacity"] = capacity[0]
+        
+        # task3 and task5
+        for name in ["Container capacity","Height","Width at the top","Width at the bottom"]:
+            value = df_t3[df_t3["Configuration ID"] == file_id][name]
+            if len(value): 
+                df.loc[index, name] = value[0]
+
+        # task4
+        for name in ["Container mass"]:
+            value = df_t4[df_t4["Configuration ID"] == file_id][name]
+            if len(value): 
+                df.loc[index, name] = value[0]
 
     return df
 
