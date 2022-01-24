@@ -103,7 +103,11 @@ class LoDE:
             capacity, height, width = self.getObjectDimensions(fid, self.c[1], self.c[3], self.roi[1], self.roi[3], tag)
             if capacity == -1:
                 print('id={}: cannot measure\n'.format(fid))
-                capacity = average_training_set
+                capacity = average_capacity
+                height = average_height
+                width_top = average_width_top
+                width_bottom = average_width_bottom
+                width = (width_top, width_bottom)
             else:
                 print('id={}: done (view1 and view3)\n'.format(fid))
         else:
