@@ -1,13 +1,12 @@
 """get data directory from cli & generate """
 import argparse
 import torch
-import pandas as pd
 from pathlib import Path
 
 from task1and2.inference import run as task1and2
 from task3.inference import run as task3
 from task4.inference import run as task4
-from utilities import merge_results, print_header
+from utilities import list2csv, merge_results, print_header
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     task4(args, csv_paths["task4"], path_for_task3=csv_paths["task3"])
 
     # merge results
-    df = merge_results(csv_paths)
-    df.to_csv(output_path)
+    results = merge_results(csv_paths)
+    list2csv(results,args.output_path)
 
     print("Success...!")

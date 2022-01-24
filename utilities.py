@@ -7,6 +7,29 @@ from typing import Dict, List, Union
 csv
 """
 
+name_type_table = {
+    "Configuration ID": int,
+    "Container capacity": float,
+    "Container mass": float,
+    "Filling mass": int,
+    "None": float,
+    "Pasta": float,
+    "Rice": float,
+    "Water": float,
+    "Filling type": int,
+    "Empty": float,
+    "Half-full": float,
+    "Full": float,
+    "Filling level": int,
+    "Width at the top": float,
+    "Width at the bottom": float,
+    "Height": float,
+    "Object safety": int,
+    "Distance": int,
+    "Angle difference": int,
+    "Execution time": float
+}
+
 
 def create_initialized_row() -> Dict[str, Union[int, float]]:
     arg_dict: Dict[str, Union[int, float]] = {
@@ -34,12 +57,12 @@ def create_initialized_row() -> Dict[str, Union[int, float]]:
     return arg_dict
 
 
-def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:  # todo: E表記をしないように修正
+def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:
     result = []
     for i in range(len(lis)):
         dt = {}
         for key, value in lis[i].items():
-            tp = type(value)
+            tp = name_type_table[key]
             if tp is float:
                 dt[key] = "{:.5f}".format(value)
             elif tp is int:
@@ -77,31 +100,41 @@ def list2csv(lis: List[Dict[str, Union[int, float]]], path: Path) -> None:  # to
         writer.writeheader()
         writer.writerows(result)
 
+
 """
 Merge
 """
 
 
 def merge_results(paths):
-    df = pd.read_csv(paths["task1and2"])
-    df_t3 = pd.read_csv(paths["task3"])
-    df_t4 = pd.read_csv(paths["task4"])
+    row_dict = {}
+    for task_name in ["task1and2", "task3", "task4"]:
+        with open(str(paths[task_name]), "r") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                cid = int(row["Configuration ID"])
+                if cid not in row_dict: row_dict[cid] = []
+                row_dict[cid].append(row)
 
-    for index, row in df.iterrows():
-        file_id = row["Configuration ID"]
-        # task3 and task5
-        for name in ["Container capacity","Height","Width at the top","Width at the bottom"]:
-            value = df_t3[df_t3["Configuration ID"] == file_id][name]
-            if len(value): 
-                df.loc[index, name] = value.iloc[0]
+    targets = ["Container capacity", "Height", "Width at the top", "Width at the bottom", "Container mass"]
+    result = []
 
-        # task4
-        for name in ["Container mass"]:
-            value = df_t4[df_t4["Configuration ID"] == file_id][name]
-            if len(value):
-                df.loc[index, name] = value.iloc[0]
+    for key in sorted(row_dict.keys()):
+        merged = {}
+        for row in row_dict[key]:
+            for k, v in row.items():
+                tp = name_type_table[k]
+                v = tp(v)
+                if k not in merged:
+                    merged[k] = v
+                elif k in targets and v != -1:
+                    merged[k] = v
+                elif k == "Execution time" and v != -1:
+                    merged[k] += v
 
-    return df
+        result.append(merged)
+
+    return result
 
 
 """
