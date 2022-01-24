@@ -1,4 +1,5 @@
 import os
+import time
 import cv2
 import numpy as np
 
@@ -114,12 +115,14 @@ class MaskDataset(Dataset):
         self.dimension_vector_list = []
         self.Y = []
         self.file_ids = []
+        self.time_table = {}
         path = './cropped' if is_train else "./cropped_val"
         if not os.path.exists(path): os.makedirs(path)
         for i, fid in enumerate(x):
             print("[task4.MaskDataset] video-processing: {}/{}".format(i, len(x)))
             fid_str = str(1000000 + fid)[1:]
 
+            start_time = time.process_time()
             files = [f for f in os.listdir(path) if f == 'seg{}.pt'.format(fid_str)]
             row = df[df["Configuration ID"] == fid]
             if len(row["Configuration ID"]) == 0: continue
@@ -141,6 +144,8 @@ class MaskDataset(Dataset):
                 self.dimension_vector_list.append((width_top, width_bottom, height))
                 self.file_ids.append(fid)
                 self.Y.append(y[i])
+                elapsed_time = time.process_time() - start_time
+                self.time_table[fid] = elapsed_time
                 continue
 
             view = 3
@@ -180,6 +185,10 @@ class MaskDataset(Dataset):
             # _resized = torch.load('{}/seg{}.pt'.format(path, fid_str,))
             # assert torch.equal(resized,_resized)
 
+            # measure time
+            elapsed_time = time.process_time() - start_time
+            self.time_table[fid] = elapsed_time
+
     def __len__(self):
         return len(self.images)
 
@@ -190,3 +199,7 @@ class MaskDataset(Dataset):
         file_id = torch.Tensor([self.file_ids[idx]])
 
         return (image, dimension_vector), Y, file_id
+
+    def get_elapsed_time(self, file_id):
+        if file_id not in self.time_table: return 0
+        return self.time_table[file_id]

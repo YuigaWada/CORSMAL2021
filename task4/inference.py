@@ -1,6 +1,6 @@
 
 import torch
-import torchvision
+import time
 import numpy as np
 import pandas as pd
 
@@ -25,7 +25,11 @@ def run(args, output_path, path_for_task3):
     result_list = []
     with torch.no_grad():
         for i in range(len(dataset)):
+            print("[task4.inference] {} / {}".format(i, len(dataset)))
             (x_img, x_dimension_vector), _, idxs = dataset[i]
+            fid = int(idxs[0])
+
+            start_time = time.process_time()
 
             # inference
             pred = model(x_img.cuda().unsqueeze(0), x_dimension_vector.cuda().unsqueeze(0))
@@ -33,11 +37,13 @@ def run(args, output_path, path_for_task3):
             pred = pred.flatten()
             pred = pred[0] if pred.shape[0] > 0 else 0
 
+            # measure time
+            elapsed_time = time.process_time() - start_time
             # save as dict
             arg_dict = create_initialized_row()
-            arg_dict["Configuration ID"] = int(idxs[0])
+            arg_dict["Configuration ID"] = fid
             arg_dict["Container mass"] = pred
-
+            arg_dict["Execution time"] = elapsed_time + dataset.get_elapsed_time(fid)
             result_list.append(arg_dict)
 
     list2csv(result_list, output_path)
