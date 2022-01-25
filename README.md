@@ -47,8 +47,25 @@ test
 <!-- Run `inference.py` -->
 
 ## Training
+To train the model, organize your training data as:
+
+```
+test
+|-----audio
+|-----ccm_train_annotation.json
+```
+
 ### Task 1 and 2
-Place yourself at `CORSMAL2021/task1and2`.
+
+```
+python train.py [test_data_path] --task1and2
+```
+For example,
+```
+python train.py ./test --task1and2
+```
+
+<!-- Place yourself at `CORSMAL2021/task1and2`.
 To train the model of Task 1 and 2, organize your training data as:
 ```
 train
@@ -59,12 +76,20 @@ and put the directory in `CORSMAL2021/task1and2/data/`.
 To start the training, run
 ```
 python ./experiments/20220120-training-2.py
+``` -->
+
+### Task 4
+
+```
+python train.py [test_data_path] --task4
+```
+For example,
+```
+python train.py ./test --task4
 ```
 
 ### Task 3 and 5
 There is no training necessary for Task 3 and 5: the algorithms used in Task 3 and 5 are not deep learning ones.
-
-<!-- ### Task 4 -->
 
 
 ## Environment settings
