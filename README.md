@@ -36,13 +36,15 @@ The directory of test data should be organized as:
 ```
 test
 |-----audio
-|-----calib
 |-----view1
 |     |-----rgb
+|     |-----calib
 |-----view2
 |     |-----rgb
+|     |-----calib
 |-----view3
 |     |-----rgb
+|     |-----calib
 ```
 <!-- Run `inference.py` -->
 
