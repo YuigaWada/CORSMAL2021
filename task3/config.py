@@ -4,3 +4,4 @@ average_width_top = 91.544
 average_width_bottom = 75.579
 average_height = 130.281
 average_container_mass = 39.912
+min_container_mass = 2.0

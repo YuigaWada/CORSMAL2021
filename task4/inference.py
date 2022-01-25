@@ -39,6 +39,7 @@ def run(args, output_path, path_for_task3):
                 pred = pred.detach().cpu().numpy()
                 pred = pred.flatten()
                 pred = pred[0] if pred.shape[0] > 0 else 0
+                pred = pred if pred > 0 else min_container_mass
 
             # measure time
             elapsed_time = time.process_time() - start_time
