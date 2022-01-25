@@ -1,8 +1,8 @@
 # Corsmal Challenge 2021
 repo. for [**The CORSMAL challenge: Audio-visual object classification for human-robot collaboration**](https://corsmal.eecs.qmul.ac.uk/challenge.html)
 
-## Get Start
-### Installation
+<!-- ## Get Start -->
+## Installation
 1. Run 
 `conda env create -f env.yml`
 2. The above command may fail depending on your environment. If it fails, you need to maually install some libraries.
@@ -20,7 +20,7 @@ repo. for [**The CORSMAL challenge: Audio-visual object classification for human
 3. Additionally, if you want to rewrite the files in `corsmal_challenge`, remove it from dependencies
     `python -m pip uninstall corsmal_challenge` -->
 
-### Test
+## Test
 To output the estimations as a `.csv` file, run the following command:
 ```
 python run.py [test_data_path] [output_path] -m12 [task1and2_model] -m4 [task4_model]
@@ -31,15 +31,41 @@ python run.py ./test ./output -m12 task1and2.pt -m4 task4.pt
 ```
 The pre-trained models are available [here](https://drive.google.com/drive/folders/1QIs-POJIBtgDl1ufYrX5Sopf6RsHjKSb).
 
-The test data directory should be organized as:
+The directory of test data should be organized as:
 
 ```
 test
 |-----audio
-|-----rgb
 |-----calib
+|-----view1
+|     |-----rgb
+|-----view2
+|     |-----rgb
+|-----view3
+|     |-----rgb
 ```
 <!-- Run `inference.py` -->
+
+## Training
+### Task 1 and 2
+Place yourself at `CORSMAL2021/task1and2`.
+To train the mode of Task 1 and 2, organize your training data as:
+```
+train
+|-----audio
+```
+and put the directory in `CORSMAL2021/task1and2/data/`. 
+
+To start the training, run
+```
+python ./experiments/20220120-training-2.py
+```
+
+### Task 3 and 5
+There is no training necessary for Task 3 and 5: the algorithms used in Task 3 and 5 are not deep learning ones.
+
+<!-- ### Task 4 -->
+
 
 ## Environment settings
 ### Required env.
