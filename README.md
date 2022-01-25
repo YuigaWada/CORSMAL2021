@@ -49,7 +49,7 @@ test
 ## Training
 ### Task 1 and 2
 Place yourself at `CORSMAL2021/task1and2`.
-To train the mode of Task 1 and 2, organize your training data as:
+To train the model of Task 1 and 2, organize your training data as:
 ```
 train
 |-----audio
