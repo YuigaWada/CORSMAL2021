@@ -31,6 +31,14 @@ python run.py ./test ./output -m12 task1and2.pt -m4 task4.pt
 ```
 The pre-trained models are available [here](https://drive.google.com/drive/folders/1QIs-POJIBtgDl1ufYrX5Sopf6RsHjKSb).
 
+The test data directory should be organized as:
+
+```
+test
+|-----audio
+|-----rgb
+|-----calib
+```
 <!-- Run `inference.py` -->
 
 ## Environment settings
