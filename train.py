@@ -12,7 +12,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 if __name__ == "__main__":
     # parse args
     parser = argparse.ArgumentParser()
-    parser.add_argument("path2data", help="Path to the given data directory", type=str) #we need args.path2data / ccm_train_annotation.json
+    parser.add_argument("path2data", help="Path to the given data directory", type=str)  # we need args.path2data / ccm_train_annotation.json
     parser.add_argument(
         "--task1and2",
         help='To train task1 and task2',
@@ -24,7 +24,7 @@ if __name__ == "__main__":
         action='store_true'
     )
 
-    args = parser.parse_args() 
+    args = parser.parse_args()
     args.validation_task3 = False
 
     # prepare paths
@@ -39,8 +39,7 @@ if __name__ == "__main__":
         print("\nTraining Task1 and Task2 ...\n")
         trainTask1and2(args)
 
-        print("task1and2: Success...! (./train4.pt)")
-
+        print("task1and2: Success...! (./task1and2.pt)")
 
     if args.task4:
         # container capacity estimation (for training task4)
@@ -51,4 +50,4 @@ if __name__ == "__main__":
         print("\nTraining Task4 ...\n")
         trainTask4(args, path_for_task3=csv_paths["task3"])
 
-        print("task4: Success...! (./train4.pt)")
+        print("task4: Success...! (./task4.pt)")

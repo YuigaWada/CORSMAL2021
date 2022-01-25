@@ -104,14 +104,14 @@ def train(args):
             min_val_loss_sum_t1_t2 = val_loss_t1[-1] + val_loss_t2[-1]
             best_loss_pair = val_loss_t1[-1], val_loss_t2[-1]
             best_acc_pair = val_acc_t1, val_acc_t2
-            torch.save(model.state_dict(), current_dir / "20220120-training-2-result.pt")
+            torch.save(model.state_dict(), current_dir / "task1and2.pt")
 
     plt.plot(train_loss_t1, label="train loss: t1")
     plt.plot(val_loss_t1, label="val loss: t1")
     plt.plot(train_loss_t2, label="train loss: t2")
     plt.plot(val_loss_t2, label="val loss: t2")
     plt.legend()
-    plt.savefig(str(current_dir / "20220120-training-2-result.png"))
+    plt.savefig(str(current_dir / "task1and2_result.png"))
 
     print(f"best (val_loss_t1, val_loss_t2) pair is {best_loss_pair}!")
     print(f"then (val_acc_t1, val_acc_t2) pair is {best_acc_pair}!")
