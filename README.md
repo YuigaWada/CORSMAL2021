@@ -50,7 +50,7 @@ test
 To train the model, organize your training data as:
 
 ```
-test
+train
 |-----audio
 |-----ccm_train_annotation.json
 ```
@@ -58,11 +58,11 @@ test
 ### Task 1 and 2
 
 ```
-python train.py [test_data_path] --task1and2
+python train.py [train_data_path] --task1and2
 ```
 For example,
 ```
-python train.py ./test --task1and2
+python train.py ./train --task1and2
 ```
 
 <!-- Place yourself at `CORSMAL2021/task1and2`.
@@ -81,11 +81,11 @@ python ./experiments/20220120-training-2.py
 ### Task 4
 
 ```
-python train.py [test_data_path] --task4
+python train.py [train_data_path] --task4
 ```
 For example,
 ```
-python train.py ./test --task4
+python train.py ./train --task4
 ```
 
 ### Task 3 and 5
