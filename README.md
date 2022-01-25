@@ -27,7 +27,7 @@ python run.py [test_data_path] [output_path] -m12 [task1and2_model] -m4 [task4_m
 ```
 For example,
 ```
-python run.py ./test ./output -m12 task1and2.pt -m4 task4.pt
+python run.py ./test ./output.csv -m12 task1and2.pt -m4 task4.pt
 ```
 The pre-trained models are available [here](https://drive.google.com/drive/folders/1QIs-POJIBtgDl1ufYrX5Sopf6RsHjKSb).
 
