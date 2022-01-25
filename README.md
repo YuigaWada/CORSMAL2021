@@ -6,7 +6,7 @@ repo. for [**The CORSMAL challenge: Audio-visual object classification for human
 1. Run 
 `conda env create -f env.yml`
 2. The above command may fail depending on your environment. If it fails, you need to maually install some libraries.
-    1. If you do not have `torch` or `torchaudio` installed, install them by pip.. See https://pytorch.org/ and check your hardware requirements.
+    1. If you do not have `torch`, `torchaudio` or `torchvision` installed, install them by pip.. See https://pytorch.org/ and check your hardware requirements.
     2. To install `pandas`, run
     `conda install pandas`
     3. To install `opencv`, run
