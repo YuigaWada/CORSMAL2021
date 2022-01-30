@@ -140,7 +140,12 @@ We installed pytorch for `CUDA 11.1` with pip.
 - torch==1.8.2+cu111
 - torchaudio==0.8.2
 - torchvision==0.9.2+cu111
+## Licence
 
+- LoDE(Creative Commons Attribution-NonCommercial 4.0)
+
+This work is licensed under the MIT License. 
+To view a copy of this license, see LICENSE.
 
 <!-- ## Dataset
 Download from [official page](https://corsmal.eecs.qmul.ac.uk/containers_manip.html) & unzip them into `data/` directory.  
