@@ -67,6 +67,9 @@ To train the model, organize your training data as:
 ```
 train
 |-----audio
+|-----view1
+|-----view2
+|-----view3
 |-----ccm_train_annotation.json
 ```
 
