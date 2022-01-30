@@ -3,22 +3,35 @@ repo. for [**The CORSMAL challenge: Audio-visual object classification for human
 
 <!-- ## Get Start -->
 ## Installation
-1. Run 
-`conda env create -f env.yml`
+### Requirements
+
+- python=3.7.11
+- numpy=1.21.2
+- scipy=1.6.2
+- pandas=1.3.5
+- matplotlib=3.5.0
+- opencv-python=4.5.5.62
+
+- torch=1.8.2
+- torchaudio=0.8.2
+- torchvision=0.9.2
+
+### Instructions
+
+0. Clone repository. `git clone https://github.com/YuigaWada/CORSMAL2021.git`
+
+1. Create a new conda environment and activate it. `conda env create -f env.yml && conda activate corsmal`
+
 2. The above command may fail depending on your environment. If it fails, you need to maually install some libraries.
     1. If you do not have `torch`, `torchaudio` or `torchvision` installed, install them by pip.. See https://pytorch.org/ and check your hardware requirements.
     2. To install `pandas`, run
-    `conda install pandas`
-    3. To install `opencv`, run
-    `conda install opencv`
-    4. To install `scipy`, run
-    `conda install -c anaconda scipy`
-3. If you want to train models, you also need to run
-`conda install numpy ipykernel matplotlib torchinfo -c conda-forge`
-<!-- 2. In this directory,  
-    `python -m pip install ./ --use-feature=in-tree-build`
-3. Additionally, if you want to rewrite the files in `corsmal_challenge`, remove it from dependencies
-    `python -m pip uninstall corsmal_challenge` -->
+    `conda install pandas` or `conda install pandas=1.3.5=py37h8c16a72_0`
+    3. To install `scipy`, run
+    `conda install scipy` or `conda install scipy=1.6.2=py37had2a1c9_1`
+    4. To install `matplotlib`, run
+    `conda install matplotlib` or `conda install matplotlib=3.5.0=py37h06a4308_0`
+    5. To install `opencv-python`, run
+    `conda install opencv-python` or `pip install opencv-python==4.5.5.62`
 
 ## Test
 To output the estimations as a `.csv` file, run the following command:
@@ -122,7 +135,12 @@ Libraries
 - Miniconda 4.7.12 (pyenv)
 
 ### Additional information
-The version of python3 in miniconda4.7.12 (pyenv) is `python3.7.4`
+We installed pytorch for `CUDA 11.1` with pip.
+
+- torch==1.8.2+cu111
+- torchaudio==0.8.2
+- torchvision==0.9.2+cu111
+
 
 <!-- ## Dataset
 Download from [official page](https://corsmal.eecs.qmul.ac.uk/containers_manip.html) & unzip them into `data/` directory.  
