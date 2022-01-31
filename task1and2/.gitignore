@@ -4,3 +4,5 @@
 !/data/corsmal_data.csv
 /**/*.pt
 /experiments/**/*.png
+!/experiments/**/20220127-model_validation.ipynb
+!/experiments/**/20220127-model_validation2.ipynb
