@@ -1,5 +1,6 @@
 # Corsmal Challenge 2021
-Team <i>KEIO-ICS</i> repository for [**The CORSMAL challenge: Audio-visual object classification for human-robot collaboration**](https://corsmal.eecs.qmul.ac.uk/challenge.html).
+- Team <i>KEIO-ICS</i> repository for [**The CORSMAL challenge**](https://corsmal.eecs.qmul.ac.uk/challenge.html).
+- [[paper](https://ieeexplore.ieee.org/document/9747110)]
 
 <p align="center">
 <img width="600" src="https://user-images.githubusercontent.com/51681991/175864112-4e15252f-c269-4454-bc6c-0330b81a014b.png">
