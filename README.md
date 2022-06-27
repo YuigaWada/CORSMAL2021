@@ -1,5 +1,13 @@
 # Corsmal Challenge 2021
-repo. for [**The CORSMAL challenge: Audio-visual object classification for human-robot collaboration**](https://corsmal.eecs.qmul.ac.uk/challenge.html)
+Team <i>KEIO-ICS</i> repository for [**The CORSMAL challenge: Audio-visual object classification for human-robot collaboration**](https://corsmal.eecs.qmul.ac.uk/challenge.html).
+
+<p align="center">
+<img width="600" src="https://user-images.githubusercontent.com/51681991/175864112-4e15252f-c269-4454-bc6c-0330b81a014b.png">
+
+<img width="600" src="https://user-images.githubusercontent.com/51681991/175864119-efa61656-2128-434f-9df2-2be6bce95293.png">
+
+<img width="600" src="https://user-images.githubusercontent.com/51681991/175864126-60df1cdc-9973-405f-b61d-30c1078fc6ee.png">
+</p>
 
 <!-- ## Get Start -->
 ## Installation
@@ -146,6 +154,7 @@ We installed pytorch for `CUDA 11.1` with pip.
 ## Licence
 
 - LoDE(Creative Commons Attribution-NonCommercial 4.0)
+    - We use LoDE with some formula modifications.
 
 This work is licensed under the MIT License. 
 To view a copy of this license, see LICENSE.
