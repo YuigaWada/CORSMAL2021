@@ -6,6 +6,30 @@
 <img width="600" src="https://i.gyazo.com/6a47bfab61c11347b791f45a806786f0.png">
 </p>
 
+
+## Paper 
+- [Shared Transformer Encoder with Mask-Based 3d Model Estimation for Container Mass Estimation](https://ieeexplore.ieee.org/document/9747110)
+    - *Tomoya Matsubara
+    - *Seitaro Otsuki
+    - *Yuiga Wada
+    - Haruka Matsuo
+    - Takumi Komatsu
+    - Yui Iioka
+    - Komei Sugiura
+    - Hideo Saito
+
+(* Equal contribution)
+
+### TL;DR
+<p align="center">
+<img width="600" src="https://user-images.githubusercontent.com/51681991/175864112-4e15252f-c269-4454-bc6c-0330b81a014b.png">
+
+<img width="600" src="https://user-images.githubusercontent.com/51681991/175864119-efa61656-2128-434f-9df2-2be6bce95293.png">
+
+<img width="600" src="https://user-images.githubusercontent.com/51681991/175864126-60df1cdc-9973-405f-b61d-30c1078fc6ee.png">
+</p>
+
+
 <!-- ## Get Start -->
 ## Installation
 ### Requirements
@@ -65,26 +89,6 @@ test
 |     |-----calib
 ```
 <!-- Run `inference.py` -->
-
-## paper 
-- [Shared Transformer Encoder with Mask-Based 3d Model Estimation for Container Mass Estimation](https://ieeexplore.ieee.org/document/9747110)
-    - *Tomoya Matsubara
-    - *Seitaro Otsuki
-    - *Yuiga Wada
-    - Haruka Matsuo
-    - Takumi Komatsu
-    - Yui Iioka
-    - Komei Sugiura
-    - Hideo Saito
-All Authors
-### TL;DR
-<p align="center">
-<img width="600" src="https://user-images.githubusercontent.com/51681991/175864112-4e15252f-c269-4454-bc6c-0330b81a014b.png">
-
-<img width="600" src="https://user-images.githubusercontent.com/51681991/175864119-efa61656-2128-434f-9df2-2be6bce95293.png">
-
-<img width="600" src="https://user-images.githubusercontent.com/51681991/175864126-60df1cdc-9973-405f-b61d-30c1078fc6ee.png">
-</p>
 
 ## Training
 To train the model, organize your training data as:
